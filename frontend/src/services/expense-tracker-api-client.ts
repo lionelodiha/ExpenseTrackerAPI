@@ -2,7 +2,7 @@ import axios, { AxiosError, type AxiosInstance, type AxiosResponse } from "axios
 import { STORAGE_KEYS } from "../constants/storage-key";
 import type { ApiResponse } from "../dtos/api-response";
 
-const API_BASE_URL = "http://localhost:5068/";
+const API_BASE_URL = "https://expense-tracker-api-qz2g.onrender.com/";
 
 export const expenseTrackerApiClient: AxiosInstance = axios.create({
 	baseURL: API_BASE_URL,
@@ -33,7 +33,7 @@ expenseTrackerApiClient.interceptors.response.use(
 		}
 
 		// Network or unexpected error fallback
-		const fallback: ApiResponse<any> = {
+		const fallback: ApiResponse<unknown> = {
 			success: false,
 			message: error.message,
 			timestamp: new Date().toISOString(),
