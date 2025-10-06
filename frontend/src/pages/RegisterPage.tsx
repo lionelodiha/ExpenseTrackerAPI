@@ -31,10 +31,19 @@ const RegisterPage = () => {
     setLoading(true);
 
     try {
-      await register(name, email, password);
-      navigate('/login');
+      const response = await register(name, email, password);
+      
+      // Check if registration was successful
+      if (response?.success) {
+        navigate('/login');
+      } else {
+        setError(response?.message || 'Failed to register. Please try again.');
+      }
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to register. Please try again.');
+      const errorMessage = err?.response?.data?.message 
+        || err?.message 
+        || 'Failed to register. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -17,10 +17,19 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      const response = await login(email, password);
+      
+      // Check if login was successful
+      if (response?.success) {
+        navigate('/dashboard');
+      } else {
+        setError(response?.message || 'Failed to log in. Please check your credentials.');
+      }
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to log in. Please check your credentials.');
+      const errorMessage = err?.response?.data?.message 
+        || err?.message 
+        || 'Failed to log in. Please check your credentials.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
