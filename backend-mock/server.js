@@ -150,76 +150,71 @@ app.post('/api/v1/auth/logout', authenticateToken, (req, res) => {
 // ============ DASHBOARD ROUTES ============
 
 app.get('/api/v1/dashboard/summary', authenticateToken, (req, res) => {
-  // Generate mock dashboard data
+  // Get REAL user data
+  const userExpenses = expenses.filter(e => e.userId === req.user.userId);
+  const userGoals = budgets.filter(g => g.userId === req.user.userId && g.type === 'savings');
+  
+  // Calculate real totals
+  const totalExpenses = userExpenses.reduce((sum, e) => sum + e.amount, 0);
+  const totalSavings = userGoals.reduce((sum, g) => sum + (g.currentAmount || 0), 0);
+  
+  // Calculate category breakdown
+  const categoryMap = {};
+  userExpenses.forEach(expense => {
+    if (!categoryMap[expense.category]) {
+      categoryMap[expense.category] = 0;
+    }
+    categoryMap[expense.category] += expense.amount;
+  });
+  
+  const categoryBreakdown = Object.keys(categoryMap).map(category => ({
+    category,
+    totalSpent: categoryMap[category]
+  }));
+  
+  // Get recent transactions (last 10)
+  const recentTransactions = userExpenses
+    .sort((a, b) => new Date(b.dateOfExpense).getTime() - new Date(a.dateOfExpense).getTime())
+    .slice(0, 10)
+    .map(e => ({
+      id: e.id,
+      category: e.category,
+      amount: e.amount,
+      dateOfExpense: e.dateOfExpense,
+      description: e.description
+    }));
+  
+  // Calculate daily trend (last 7 days)
+  const dailyTrend = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const dateString = date.toISOString().split('T')[0];
+    
+    const dayTotal = userExpenses
+      .filter(e => e.dateOfExpense.split('T')[0] === dateString)
+      .reduce((sum, e) => sum + e.amount, 0);
+    
+    dailyTrend.push({
+      date: dateString,
+      amount: dayTotal
+    });
+  }
+  
   const dashboardData = {
-    totalExpenses: 25657.00,
-    totalSavings: 5430.00,
-    budgets: [
-      { category: 'Food', budgetedAmount: 500, spentAmount: 345 },
-      { category: 'Entertainment', budgetedAmount: 300, spentAmount: 245 },
-      { category: 'Transport', budgetedAmount: 200, spentAmount: 180 }
-    ],
-    categoryBreakdown: [
-      { category: 'Food', totalSpent: 345 },
-      { category: 'Entertainment', totalSpent: 245 },
-      { category: 'Transport', totalSpent: 180 },
-      { category: 'Shopping', totalSpent: 520 },
-      { category: 'Healthcare', totalSpent: 145 }
-    ],
-    dailyTrend: [
-      { date: '2025-10-01', amount: 85 },
-      { date: '2025-10-02', amount: 120 },
-      { date: '2025-10-03', amount: 95 },
-      { date: '2025-10-04', amount: 150 },
-      { date: '2025-10-05', amount: 110 },
-      { date: '2025-10-06', amount: 130 }
-    ],
-    recentTransactions: [
-      {
-        id: '1',
-        category: 'Pharmacy',
-        amount: 145,
-        dateOfExpense: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-        description: 'Medicine purchase'
-      },
-      {
-        id: '2',
-        category: 'Transfer',
-        amount: 1005,
-        dateOfExpense: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        description: 'Money transfer to savings'
-      },
-      {
-        id: '3',
-        category: 'Cinema',
-        amount: 26.50,
-        dateOfExpense: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-        description: 'Movie tickets'
-      },
-      {
-        id: '4',
-        category: 'Food',
-        amount: 345,
-        dateOfExpense: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-        description: 'Grocery shopping'
-      }
-    ],
-    savingGoals: [
-      {
-        id: '1',
-        title: 'Vacation Fund',
-        targetAmount: 5000,
-        currentAmount: 2300,
-        status: 'Active'
-      },
-      {
-        id: '2',
-        title: 'Emergency Fund',
-        targetAmount: 10000,
-        currentAmount: 3130,
-        status: 'Active'
-      }
-    ]
+    totalExpenses,
+    totalSavings,
+    budgets: [], // Can add budget tracking later
+    categoryBreakdown,
+    dailyTrend,
+    recentTransactions,
+    savingGoals: userGoals.map(g => ({
+      id: g.id,
+      title: g.title,
+      targetAmount: g.targetAmount,
+      currentAmount: g.currentAmount || 0,
+      status: g.status
+    }))
   };
 
   res.json(apiResponse(true, dashboardData, 'Dashboard summary retrieved successfully.'));

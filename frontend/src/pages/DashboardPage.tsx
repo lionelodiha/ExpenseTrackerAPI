@@ -192,29 +192,46 @@ const DashboardPage: React.FC = () => {
           <div className="airpay__transactions">
             <div className="airpay__transactions-header">
               <h3 className="airpay__transactions-title">TRANSACTIONS HISTORY</h3>
-              <a href="#all" className="airpay__transactions-link">See all →</a>
+              <Link to="/expenses" className="airpay__transactions-link">See all →</Link>
             </div>
 
             <div className="airpay__transactions-list">
-              {summary?.recentTransactions.slice(0, 4).map((transaction) => (
-                <div key={transaction.id} className="airpay__transaction">
-                  <div className="airpay__transaction-icon">
-                    {transaction.category === 'Pharmacy' ? '💊' :
-                     transaction.category === 'Transfer' ? '💸' :
-                     transaction.category === 'Cinema' ? '🎬' :
-                     transaction.category === 'Food' ? '🍔' : '🛒'}
-                  </div>
-                  <div className="airpay__transaction-info">
-                    <div className="airpay__transaction-name">{transaction.category}</div>
-                    <div className="airpay__transaction-date">
-                      {transaction.dateOfExpense ? new Date(transaction.dateOfExpense).toLocaleDateString() : '14 min ago'}
+              {summary?.recentTransactions && summary.recentTransactions.length > 0 ? (
+                summary.recentTransactions.slice(0, 4).map((transaction) => (
+                  <div key={transaction.id} className="airpay__transaction">
+                    <div className="airpay__transaction-icon">
+                      {transaction.category === 'Food' ? '🍔' :
+                       transaction.category === 'Transport' ? '🚗' :
+                       transaction.category === 'Entertainment' ? '🎮' :
+                       transaction.category === 'Healthcare' ? '💊' :
+                       transaction.category === 'Shopping' ? '🛍️' : '💸'}
                     </div>
+                    <div className="airpay__transaction-info">
+                      <div className="airpay__transaction-name">{transaction.description || transaction.category}</div>
+                      <div className="airpay__transaction-date">
+                        {(() => {
+                          if (!transaction.dateOfExpense) return 'Recently';
+                          const date = new Date(transaction.dateOfExpense);
+                          return date.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          });
+                        })()}
+                      </div>
+                    </div>
+                    <div className="airpay__transaction-amount">-${transaction.amount.toFixed(2)}</div>
                   </div>
-                  <div className="airpay__transaction-amount">-{transaction.amount}</div>
+                ))
+              ) : (
+                <div className="airpay__transaction-empty">
+                  <p>No transactions yet</p>
+                  <Link to="/expenses/add" className="airpay__transaction-add-link">Add your first expense</Link>
                 </div>
-              ))}
+              )}
               
-              {(!summary || summary.recentTransactions.length === 0) && (
+              {(!summary || summary.recentTransactions.length === 0) && false && (
                 <>
                   <div className="airpay__transaction">
                     <div className="airpay__transaction-icon">💊</div>

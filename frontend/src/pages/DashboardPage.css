@@ -531,8 +531,35 @@
 
 .airpay__transaction-amount {
   font-weight: 600;
-  color: #333;
+  color: #dc2626;
   font-size: 0.95rem;
+}
+
+.airpay__transaction-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.airpay__transaction-empty p {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+}
+
+.airpay__transaction-add-link {
+  color: #2d5f4d;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  background: rgba(45, 95, 77, 0.1);
+  border-radius: 0.5rem;
+  display: inline-block;
+  transition: all 0.2s;
+}
+
+.airpay__transaction-add-link:hover {
+  background: rgba(45, 95, 77, 0.2);
+  transform: translateY(-2px);
 }
 
 /* Expenses Chart */
