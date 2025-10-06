@@ -1,9 +1,10 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/auth-hook';
+import React from 'react';
 
-const PrivateRoute = () => {
+const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const { user } = useAuth();
-	return user ? <Outlet /> : <Navigate to="/login" />;
+	return user ? <>{children}</> : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;

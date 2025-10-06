@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { savingGoalService } from "../services/saving-goal-service";
-import NavBar from "../components/Navbar";
+import NavBar from "../components/NavBar";
 import { Link } from "react-router-dom";
 import type { CreateSavingGoalResponse } from "../dtos/saving-goals/create-saving-goal-response";
 import "./SavingsPage.css";
