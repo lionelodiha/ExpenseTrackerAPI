@@ -2,7 +2,7 @@ import axios, { AxiosError, type AxiosInstance, type AxiosResponse } from "axios
 import { STORAGE_KEYS } from "../constants/storage-key";
 import type { ApiResponse } from "../dtos/api-response";
 
-const API_BASE_URL = "http://localhost:5068/";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5068";
 
 export const expenseTrackerApiClient: AxiosInstance = axios.create({
 	baseURL: API_BASE_URL,
