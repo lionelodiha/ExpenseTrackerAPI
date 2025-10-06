@@ -1,0 +1,629 @@
+/* Landing Page - Air Pay Design */
+.landing {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #5a8f7b 0%, #7ba891 50%, #9bc4b8 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+/* Sidebar */
+.landing__sidebar {
+  width: 240px;
+  background: white;
+  border-radius: 24px;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.landing__logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 2rem 1rem;
+  color: #1a3a2e;
+}
+
+.landing__nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.landing__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1.25rem;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #6b7280;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.landing__nav-item:hover {
+  background: #f3f4f6;
+}
+
+.landing__nav-item--active {
+  background: #1a3a2e;
+  color: white;
+  font-weight: 500;
+}
+
+.landing__nav-icon {
+  font-size: 1.25rem;
+}
+
+.landing__premium {
+  margin-top: auto;
+  background: linear-gradient(135deg, #1a3a2e 0%, #2d5a4a 100%);
+  border-radius: 16px;
+  padding: 1.5rem 1.25rem;
+  color: white;
+}
+
+.landing__premium-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.landing__premium-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.landing__premium-text {
+  font-size: 0.8rem;
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.landing__premium-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  padding: 0.625rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.landing__premium-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Main Content */
+.landing__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1200px;
+}
+
+/* Header */
+.landing__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.landing__search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #f9fafb;
+  padding: 0.625rem 1rem;
+  border-radius: 10px;
+  min-width: 240px;
+}
+
+.landing__search-icon {
+  font-size: 1.125rem;
+  opacity: 0.5;
+}
+
+.landing__search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.9rem;
+  width: 100%;
+  color: #1f2937;
+}
+
+.landing__search-input::placeholder {
+  color: #9ca3af;
+}
+
+.landing__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.landing__date-picker,
+.landing__language {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.landing__date-picker:hover,
+.landing__language:hover {
+  background: #f3f4f6;
+}
+
+.landing__calendar-icon,
+.landing__dropdown-icon {
+  opacity: 0.5;
+  font-size: 0.875rem;
+}
+
+.landing__user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.landing__user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5a8f7b, #7ba891);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.landing__user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+/* Content Grid */
+.landing__content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* Balance Card */
+.landing__balance-card {
+  background: linear-gradient(135deg, #1a3a2e 0%, #2d5a4a 60%, #7ba891 100%);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  color: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.landing__balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.landing__more-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.landing__balance-amount {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.landing__balance-change {
+  color: #86efac;
+  font-size: 0.95rem;
+  margin: 0 0 2rem 0;
+}
+
+.landing__account-number {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.landing__account-label {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.landing__account-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Spending Statistics */
+.landing__spending-stats {
+  background: white;
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.landing__stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.landing__stats-header h3 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.landing__period-select {
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  outline: none;
+  color: #1f2937;
+}
+
+.landing__stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.landing__stat-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.landing__stat-icon {
+  font-size: 1.75rem;
+}
+
+.landing__stat-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0 0 0.25rem 0;
+}
+
+.landing__stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.125rem 0;
+}
+
+.landing__stat-percent {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.landing__stat-circle {
+  width: 60px;
+  height: 60px;
+}
+
+.landing__circular-chart {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.landing__circle-bg {
+  fill: none;
+  stroke: #f3f4f6;
+  stroke-width: 2.8;
+}
+
+.landing__circle {
+  fill: none;
+  stroke: #1a3a2e;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+.landing__circle--yellow {
+  stroke: #fbbf24;
+}
+
+.landing__percentage {
+  fill: #1f2937;
+  font-family: sans-serif;
+  font-size: 0.45em;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.landing__add-category {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  min-height: 80px;
+}
+
+.landing__add-category:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+.landing__add-icon {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+/* Transactions */
+.landing__transactions {
+  background: white;
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.landing__section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.landing__section-header h3 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.landing__see-all {
+  color: #1a3a2e;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.landing__see-all:hover {
+  text-decoration: underline;
+}
+
+.landing__transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.landing__transaction-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.landing__transaction-icon {
+  width: 40px;
+  height: 40px;
+  background: #f9fafb;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.landing__transaction-info {
+  flex: 1;
+}
+
+.landing__transaction-name {
+  font-size: 0.925rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin: 0 0 0.25rem 0;
+}
+
+.landing__transaction-date {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.landing__transaction-amount {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.landing__transaction-amount--large {
+  font-size: 1.05rem;
+}
+
+/* Expenses Chart */
+.landing__expenses {
+  background: white;
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.landing__chart {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.landing__chart-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 180px;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.landing__chart-bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.landing__chart-bars-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.375rem;
+  height: 150px;
+  width: 100%;
+  justify-content: center;
+}
+
+.landing__chart-bar {
+  width: 20px;
+  border-radius: 6px 6px 0 0;
+  transition: all 0.3s ease;
+}
+
+.landing__chart-bar--income {
+  background: #fbbf24;
+}
+
+.landing__chart-bar--outcome {
+  background: #1a3a2e;
+}
+
+.landing__chart-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.landing__chart-legend {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.landing__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.landing__legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.landing__legend-dot--income {
+  background: #fbbf24;
+}
+
+.landing__legend-dot--outcome {
+  background: #1a3a2e;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .landing__content {
+    grid-template-columns: 1fr;
+  }
+  
+  .landing__stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .landing__add-category {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .landing__sidebar {
+    width: 100%;
+  }
+  
+  .landing__header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .landing__header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .landing__chart-bars {
+    height: 140px;
+  }
+  
+  .landing__chart-bars-wrapper {
+    height: 110px;
+  }
+}

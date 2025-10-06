@@ -9,6 +9,7 @@ import EditExpensePage from './pages/EditExpensePage';
 import SavingsPage from './pages/SavingsPage';
 import AddSavingGoalPage from './pages/AddSavingGoalPage';
 import EditSavingGoalPage from './pages/EditSavingGoalPage';
+import LandingPage from './pages/LandingPage';
 import PrivateRoute from './components/PrivateRoute';
 import ComponentTest from './pages/ComponentTest';
 import { PopupProvider } from './context/PopupProvider';
@@ -19,6 +20,7 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/components" element={<ComponentTest />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -33,7 +35,7 @@ function App() {
               <Route path="/savings/edit/:id" element={<EditSavingGoalPage />} />
             </Route>
 
-            <Route path="*" element={<Navigate to="/login" />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Router>
       </AuthProvider>
