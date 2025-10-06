@@ -1,84 +1,44 @@
-import React, { createContext, useEffect, useState, type ReactNode } from "react";
-import { authService } from "../services/auth-service";
-import type { ApiResponse } from "../dtos/api-response";
-import type { UserProfileResponse } from "../dtos/auth/user-profile-response";
-import type { AuthLoginResponse } from "../dtos/auth/auth-login-response";
-import type { AuthContextValue } from "../types/auth";
-import type { AuthLoginRequest } from "../dtos/auth/auth-login-request";
-import type { AuthRegisterRequest } from "../dtos/auth/auth-register-request";
+import React, { createContext, useContext, useMemo, useState } from "react";
+import authService from "../services/authService"; // JS is fine; see shim below
 
-export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+type User = any; // swap with your real user shape when you’re ready
 
-type AuthProviderProps = { children: ReactNode };
+type AuthContextValue = {
+  user: User | null;
+  login: (email: string, password: string) => Promise<any>;
+  logout: () => void;
+  register: (name: string, email: string, password: string) => Promise<any>;
+};
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-	const [user, setUser] = useState<UserProfileResponse | null>(null);
+const AuthContext = createContext<AuthContextValue | null>(null);
 
-	// Initialize user from server if a token exists
-	useEffect(() => {
-		const bootstrap = async () => {
-			const token = authService.getToken();
+export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(() =>
+    authService?.getCurrentUser?.() ?? null
+  );
 
-			if (!token) {
-				setUser(null);
-				return;
-			}
+  const login = async (email: string, password: string) => {
+    const data = await authService.login(email, password);
+    setUser(authService?.getCurrentUser?.() ?? null);
+    return data;
+  };
 
-			const me = await authService.getCurrentUser();
+  const logout = () => {
+    authService?.logout?.();
+    setUser(null);
+  };
 
-			if (me.success) {
-				setUser(me.data ?? null);
-			} else {
-				setUser(null);
-			}
-		};
+  const register = async (name: string, email: string, password: string) => {
+    const data = await authService.register(name, email, password);
+    return data;
+  };
 
-		void bootstrap();
-	}, []);
+  const value = useMemo(() => ({ user, login, logout, register }), [user]);
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
 
-	const login = async (payload: AuthLoginRequest): Promise<ApiResponse<AuthLoginResponse>> => {
-		const result = await authService.login(payload);
-
-		if (result.success) {
-			const me = await authService.getCurrentUser();
-
-			if (me.success) {
-				setUser(me.data ?? null);
-			}
-		}
-
-		return result;
-	};
-
-	const logout = async (): Promise<void> => {
-		await authService.logoutServer();
-		setUser(null);
-	};
-
-	const register = async (payload: AuthRegisterRequest): Promise<ApiResponse<null>> => {
-		const result = await authService.register(payload);
-		return result;
-	};
-
-	const refreshCurrentUser = async (): Promise<void> => {
-		const me = await authService.getCurrentUser();
-
-		if (me.success) {
-			setUser(me.data ?? null);
-		}
-	};
-
-	const getToken = () => authService.getToken();
-
-	const value: AuthContextValue = {
-		user,
-		isAuthenticated: !!user,
-		login,
-		logout,
-		register,
-		refreshCurrentUser,
-		getToken,
-	};
-
-	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+export const useAuth = (): AuthContextValue => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
+  return ctx;
 };
