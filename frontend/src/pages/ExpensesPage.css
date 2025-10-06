@@ -1,0 +1,289 @@
+/* Use existing dashboard styles for layout */
+@import './DashboardPage.css';
+
+/* Expenses Page Specific Styles */
+.expenses-content {
+  padding: 1rem 0;
+}
+
+.expenses-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.expenses-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d5f4d;
+  margin: 0 0 0.5rem 0;
+}
+
+.expenses-subtitle {
+  color: #666;
+  margin: 0;
+}
+
+.btn-add-expense {
+  background: linear-gradient(135deg, #2d5f4d 0%, #4a7266 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 4px 12px rgba(45, 95, 77, 0.3);
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-add-expense:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(45, 95, 77, 0.4);
+}
+
+/* Stats Cards */
+.expenses-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card__icon {
+  font-size: 2.5rem;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, rgba(45, 95, 77, 0.1), rgba(74, 114, 102, 0.1));
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-card__content {
+  flex: 1;
+}
+
+.stat-card__label {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card__value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2d5f4d;
+}
+
+/* Expenses List */
+.expenses-list-container {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.expenses-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.expenses-list-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2d5f4d;
+  margin: 0;
+}
+
+.expenses-filter {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  background: white;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #2d5f4d;
+}
+
+.expenses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.expense-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 1rem;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.expense-card:hover {
+  background: white;
+  border-color: #2d5f4d;
+  box-shadow: 0 4px 12px rgba(45, 95, 77, 0.1);
+}
+
+.expense-card__icon {
+  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.expense-card__details {
+  flex: 1;
+}
+
+.expense-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.expense-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.expense-card__amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.expense-card__meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.expense-card__category {
+  padding: 0.25rem 0.75rem;
+  background: rgba(45, 95, 77, 0.1);
+  border-radius: 0.5rem;
+  color: #2d5f4d;
+  font-weight: 500;
+}
+
+.expense-card__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.expense-card__action {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.5rem;
+  border: none;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+}
+
+.expense-card__action:hover {
+  transform: scale(1.1);
+}
+
+.expense-card__action--edit:hover {
+  background: #eff6ff;
+}
+
+.expense-card__action--delete:hover {
+  background: #fef2f2;
+}
+
+/* Empty State */
+.expenses-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.expenses-empty__icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.expenses-empty h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+}
+
+.expenses-empty p {
+  color: #666;
+  margin: 0 0 2rem 0;
+}
+
+.expenses-loading {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.125rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .expenses-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .expenses-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .expense-card {
+    flex-wrap: wrap;
+  }
+
+  .expense-card__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

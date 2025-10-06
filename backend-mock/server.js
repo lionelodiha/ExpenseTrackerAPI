@@ -225,6 +225,177 @@ app.get('/api/v1/dashboard/summary', authenticateToken, (req, res) => {
   res.json(apiResponse(true, dashboardData, 'Dashboard summary retrieved successfully.'));
 });
 
+// ============ EXPENSE ROUTES ============
+
+// Get all expenses
+app.get('/api/v1/expense/getall', authenticateToken, (req, res) => {
+  const userExpenses = expenses.filter(e => e.userId === req.user.userId);
+  res.json(apiResponse(true, userExpenses, 'Expenses retrieved successfully.'));
+});
+
+// Get expense by ID
+app.get('/api/v1/expense/:id', authenticateToken, (req, res) => {
+  const expense = expenses.find(e => e.id === req.params.id && e.userId === req.user.userId);
+  if (!expense) {
+    return res.status(404).json(apiResponse(false, null, 'Expense not found.'));
+  }
+  res.json(apiResponse(true, expense, 'Expense retrieved successfully.'));
+});
+
+// Create expense
+app.post('/api/v1/expense', authenticateToken, (req, res) => {
+  const { amount, category, description, dateOfExpense, paymentMethod } = req.body;
+
+  if (!amount || !category) {
+    return res.status(400).json(apiResponse(false, null, 'Amount and category are required.'));
+  }
+
+  const expense = {
+    id: Date.now().toString(),
+    userId: req.user.userId,
+    amount: parseFloat(amount),
+    category,
+    description: description || '',
+    dateOfExpense: dateOfExpense || new Date().toISOString(),
+    paymentMethod: paymentMethod || 'Cash',
+    createdAt: new Date().toISOString()
+  };
+
+  expenses.push(expense);
+  res.status(201).json(apiResponse(true, expense, 'Expense created successfully.'));
+});
+
+// Update expense
+app.put('/api/v1/expense/:id', authenticateToken, (req, res) => {
+  const index = expenses.findIndex(e => e.id === req.params.id && e.userId === req.user.userId);
+  
+  if (index === -1) {
+    return res.status(404).json(apiResponse(false, null, 'Expense not found.'));
+  }
+
+  const { amount, category, description, dateOfExpense, paymentMethod } = req.body;
+  
+  expenses[index] = {
+    ...expenses[index],
+    amount: amount !== undefined ? parseFloat(amount) : expenses[index].amount,
+    category: category || expenses[index].category,
+    description: description !== undefined ? description : expenses[index].description,
+    dateOfExpense: dateOfExpense || expenses[index].dateOfExpense,
+    paymentMethod: paymentMethod || expenses[index].paymentMethod,
+    updatedAt: new Date().toISOString()
+  };
+
+  res.json(apiResponse(true, expenses[index], 'Expense updated successfully.'));
+});
+
+// Delete expense
+app.delete('/api/v1/expense/:id', authenticateToken, (req, res) => {
+  const index = expenses.findIndex(e => e.id === req.params.id && e.userId === req.user.userId);
+  
+  if (index === -1) {
+    return res.status(404).json(apiResponse(false, null, 'Expense not found.'));
+  }
+
+  expenses.splice(index, 1);
+  res.json(apiResponse(true, null, 'Expense deleted successfully.'));
+});
+
+// ============ SAVINGS GOAL ROUTES ============
+
+// Get all savings goals
+app.get('/api/v1/savings/getall', authenticateToken, (req, res) => {
+  const userGoals = budgets.filter(g => g.userId === req.user.userId && g.type === 'savings');
+  res.json(apiResponse(true, userGoals, 'Savings goals retrieved successfully.'));
+});
+
+// Get savings goal by ID
+app.get('/api/v1/savings/:id', authenticateToken, (req, res) => {
+  const goal = budgets.find(g => g.id === req.params.id && g.userId === req.user.userId);
+  if (!goal) {
+    return res.status(404).json(apiResponse(false, null, 'Savings goal not found.'));
+  }
+  res.json(apiResponse(true, goal, 'Savings goal retrieved successfully.'));
+});
+
+// Create savings goal
+app.post('/api/v1/savings', authenticateToken, (req, res) => {
+  const { title, targetAmount, description, deadline } = req.body;
+
+  if (!title || !targetAmount) {
+    return res.status(400).json(apiResponse(false, null, 'Title and target amount are required.'));
+  }
+
+  const goal = {
+    id: Date.now().toString(),
+    userId: req.user.userId,
+    title,
+    targetAmount: parseFloat(targetAmount),
+    currentAmount: 0,
+    description: description || '',
+    deadline: deadline || null,
+    status: 'Active',
+    type: 'savings',
+    createdAt: new Date().toISOString()
+  };
+
+  budgets.push(goal);
+  res.status(201).json(apiResponse(true, goal, 'Savings goal created successfully.'));
+});
+
+// Update savings goal
+app.put('/api/v1/savings/:id', authenticateToken, (req, res) => {
+  const index = budgets.findIndex(g => g.id === req.params.id && g.userId === req.user.userId);
+  
+  if (index === -1) {
+    return res.status(404).json(apiResponse(false, null, 'Savings goal not found.'));
+  }
+
+  const { title, targetAmount, description, deadline, status } = req.body;
+  
+  budgets[index] = {
+    ...budgets[index],
+    title: title || budgets[index].title,
+    targetAmount: targetAmount !== undefined ? parseFloat(targetAmount) : budgets[index].targetAmount,
+    description: description !== undefined ? description : budgets[index].description,
+    deadline: deadline !== undefined ? deadline : budgets[index].deadline,
+    status: status || budgets[index].status,
+    updatedAt: new Date().toISOString()
+  };
+
+  res.json(apiResponse(true, budgets[index], 'Savings goal updated successfully.'));
+});
+
+// Add contribution to savings goal
+app.post('/api/v1/savings/contribute', authenticateToken, (req, res) => {
+  const { savingGoalId, amount } = req.body;
+  
+  const index = budgets.findIndex(g => g.id === savingGoalId && g.userId === req.user.userId);
+  
+  if (index === -1) {
+    return res.status(404).json(apiResponse(false, null, 'Savings goal not found.'));
+  }
+
+  budgets[index].currentAmount = (budgets[index].currentAmount || 0) + parseFloat(amount);
+  
+  if (budgets[index].currentAmount >= budgets[index].targetAmount) {
+    budgets[index].status = 'Completed';
+  }
+
+  res.json(apiResponse(true, budgets[index], 'Contribution added successfully.'));
+});
+
+// Delete savings goal
+app.delete('/api/v1/savings/:id', authenticateToken, (req, res) => {
+  const index = budgets.findIndex(g => g.id === req.params.id && g.userId === req.user.userId);
+  
+  if (index === -1) {
+    return res.status(404).json(apiResponse(false, null, 'Savings goal not found.'));
+  }
+
+  budgets.splice(index, 1);
+  res.json(apiResponse(true, null, 'Savings goal deleted successfully.'));
+});
+
 // ============ METADATA ROUTES ============
 
 app.get('/api/v1/metadata/expense-categories', (req, res) => {
