@@ -33,14 +33,21 @@ const RegisterPage = () => {
     try {
       const response = await register(name, email, password);
       
+      // Log response for debugging
+      console.log('Register response:', response);
+      
       // Check if registration was successful
       if (response?.success) {
         navigate('/login');
       } else {
-        setError(response?.message || 'Failed to register. Please try again.');
+        const errorMsg = response?.message || response?.errors?.[0] || 'Failed to register. Please try again.';
+        console.error('Registration failed:', errorMsg);
+        setError(errorMsg);
       }
     } catch (err: any) {
+      console.error('Registration error:', err);
       const errorMessage = err?.response?.data?.message 
+        || err?.data?.message
         || err?.message 
         || 'Failed to register. Please try again.';
       setError(errorMessage);
