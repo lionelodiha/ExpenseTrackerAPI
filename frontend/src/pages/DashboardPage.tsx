@@ -63,22 +63,22 @@ const DashboardPage: React.FC = () => {
         </div>
 
         <nav className="airpay__nav">
-          <a href="#dashboard" className="airpay__nav-item airpay__nav-item--active">
+          <Link to="/dashboard" className="airpay__nav-item airpay__nav-item--active">
             <span className="airpay__nav-icon">📊</span>
             <span>Dashboard</span>
-          </a>
-          <a href="#wallet" className="airpay__nav-item">
-            <span className="airpay__nav-icon">💳</span>
-            <span>My wallet</span>
-          </a>
-          <a href="#transactions" className="airpay__nav-item">
-            <span className="airpay__nav-icon">🔄</span>
-            <span>Transactions</span>
-          </a>
-          <a href="#statistics" className="airpay__nav-item">
+          </Link>
+          <Link to="/expenses" className="airpay__nav-item">
+            <span className="airpay__nav-icon">💸</span>
+            <span>Expenses</span>
+          </Link>
+          <Link to="/savings" className="airpay__nav-item">
+            <span className="airpay__nav-icon">💰</span>
+            <span>Savings</span>
+          </Link>
+          <Link to="/budgets" className="airpay__nav-item">
             <span className="airpay__nav-icon">📈</span>
-            <span>Statistics</span>
-          </a>
+            <span>Budgets</span>
+          </Link>
           <a href="#settings" className="airpay__nav-item">
             <span className="airpay__nav-icon">⚙️</span>
             <span>Settings</span>
