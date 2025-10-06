@@ -1,0 +1,70 @@
+===============================================
+  QUICK START - Air Pay Backend
+===============================================
+
+YOUR FRONTEND IS ON YOUR WINDOWS PC
+YOUR BACKEND NEEDS TO BE ON YOUR WINDOWS PC TOO!
+
+===============================================
+  EASIEST WAY: Mock Backend
+===============================================
+
+1. Open PowerShell in your project folder:
+   cd "C:\Users\KING VINCENZO\Documents\GitHub\ExpenseTrackerAPI"
+
+2. Go to mock backend folder:
+   cd backend-mock
+
+3. Install dependencies (first time only):
+   npm install
+
+4. Start the backend:
+   npm start
+
+5. You should see:
+   ✅ Server running on: http://localhost:5068
+
+6. LEAVE THIS WINDOW OPEN!
+
+7. Open a NEW PowerShell window for frontend:
+   cd "C:\Users\KING VINCENZO\Documents\GitHub\ExpenseTrackerAPI\frontend"
+   npm run dev
+
+8. Go to: http://localhost:3000
+
+9. Register and login - IT WILL WORK! ✅
+
+===============================================
+  OR: Use Real .NET Backend
+===============================================
+
+1. Open PowerShell:
+   cd "C:\Users\KING VINCENZO\Documents\GitHub\ExpenseTrackerAPI\backend"
+
+2. Restore packages:
+   dotnet restore
+
+3. Run the backend:
+   dotnet run
+
+4. You should see:
+   Now listening on: http://localhost:5068
+
+5. LEAVE THIS WINDOW OPEN!
+
+6. Open a NEW PowerShell window for frontend:
+   cd "C:\Users\KING VINCENZO\Documents\GitHub\ExpenseTrackerAPI\frontend"
+   npm run dev
+
+7. Go to: http://localhost:3000
+
+8. Register and login - IT WILL WORK! ✅
+
+===============================================
+
+IMPORTANT: 
+- Keep backend terminal OPEN and RUNNING
+- Open NEW terminal for frontend
+- Backend MUST be on YOUR PC, not remote!
+
+===============================================
