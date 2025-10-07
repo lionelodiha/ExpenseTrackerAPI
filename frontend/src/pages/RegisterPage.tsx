@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./RegisterPage.css";
 import { useAuth } from "../hooks/auth-hook";
+import { Icon } from "../components/Icon";
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -69,17 +70,13 @@ const RegisterPage = () => {
         <div className="auth-page__brand">
           <div className="auth-page__logo">
             <div className="auth-page__logo-icon">
-              <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="60" height="60" rx="15" fill="white" fillOpacity="0.2"/>
-                <path d="M30 15L42 25H38V40C38 41.1046 37.1046 42 36 42H24C22.8954 42 22 41.1046 22 40V25H18L30 15Z" fill="white"/>
-                <circle cx="30" cy="32" r="3" fill="#2d5f4d"/>
-              </svg>
+              <Icon name="logo" size={52} />
             </div>
-            <h1 className="auth-page__logo-text">VINGOSI</h1>
+            <h1 className="auth-page__logo-text">VINGOSI ET</h1>
           </div>
           
           <div className="auth-page__welcome">
-            <h2 className="auth-page__welcome-title">Join VINGOSI Today!</h2>
+            <h2 className="auth-page__welcome-title">Join VINGOSI ET Today!</h2>
             <p className="auth-page__welcome-text">
               Create your account and start managing your finances like a pro with our beautiful and intuitive dashboard.
             </p>
@@ -87,21 +84,27 @@ const RegisterPage = () => {
 
           <div className="auth-page__features">
             <div className="auth-page__feature">
-              <div className="auth-page__feature-icon">🚀</div>
+              <div className="auth-page__feature-icon">
+                <Icon name="arrow-up-right" size={26} />
+              </div>
               <div className="auth-page__feature-text">
                 <h3>Quick Setup</h3>
                 <p>Get started in less than 2 minutes</p>
               </div>
             </div>
             <div className="auth-page__feature">
-              <div className="auth-page__feature-icon">🔐</div>
+              <div className="auth-page__feature-icon">
+                <Icon name="shield" size={26} />
+              </div>
               <div className="auth-page__feature-text">
                 <h3>Secure & Private</h3>
                 <p>Your data is encrypted and protected</p>
               </div>
             </div>
             <div className="auth-page__feature">
-              <div className="auth-page__feature-icon">💎</div>
+              <div className="auth-page__feature-icon">
+                <Icon name="trend-up" size={26} />
+              </div>
               <div className="auth-page__feature-text">
                 <h3>Premium Features</h3>
                 <p>Access to advanced analytics tools</p>
@@ -120,7 +123,7 @@ const RegisterPage = () => {
 
             {error && (
               <div className="auth-page__error">
-                <span className="auth-page__error-icon">⚠️</span>
+                <span className="auth-page__error-icon"><Icon name="alert" size={18} /></span>
                 <span>{error}</span>
               </div>
             )}
@@ -233,7 +236,7 @@ const RegisterPage = () => {
                 ) : (
                   <>
                     <span>Create Account</span>
-                    <span className="auth-page__button-icon">→</span>
+                    <span className="auth-page__button-icon"><Icon name="arrow-right" size={18} /></span>
                   </>
                 )}
               </button>
@@ -275,3 +278,11 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+
+
+
+
+
+
+
+

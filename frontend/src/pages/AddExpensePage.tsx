@@ -81,7 +81,7 @@ const AddExpensePage: React.FC = () => {
       <aside className="airpay__sidebar">
         <div className="airpay__brand">
           <div className="airpay__logo">📱</div>
-          <h1 className="airpay__title">Air Pay</h1>
+          <h1 className="airpay__title">VINGOSI ET</h1>
         </div>
 
         <nav className="airpay__nav">
@@ -277,3 +277,4 @@ const AddExpensePage: React.FC = () => {
 };
 
 export default AddExpensePage;
+

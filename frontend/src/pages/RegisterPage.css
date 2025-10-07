@@ -12,7 +12,7 @@
 }
 
 .auth-page__terms .auth-page__checkbox span {
-  color: #666;
+  color: #4d5561;
 }
 
 .auth-page__terms .auth-page__link {
@@ -35,7 +35,7 @@
 }
 
 .auth-page__password-strength-bar--active {
-  background: #2d5f4d;
+  background: #2f8a68;
 }
 
 .auth-page__password-strength-bar--weak {
@@ -49,3 +49,4 @@
 .auth-page__password-strength-bar--strong {
   background: #10b981;
 }
+

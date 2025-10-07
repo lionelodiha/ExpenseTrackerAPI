@@ -1,162 +1,180 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import type { DashboardSummaryResponse } from "../dtos/dashboards/dashboard-summary-response";
 import { dashboardService } from "../services/dashboard-service";
 import { useAuth } from "../hooks/auth-hook";
+import { Icon, type IconName } from "../components/Icon";
 import "./DashboardPage.css";
+
+type NavItem =
+  | { label: string; icon: IconName; to: string }
+  | { label: string; icon: IconName; href: string };
+
+const NAV_ITEMS: NavItem[] = [
+  { label: "Overview", to: "/dashboard", icon: "dashboard" },
+  { label: "Expenses", to: "/expenses", icon: "expenses" },
+  { label: "Savings", to: "/savings", icon: "savings" },
+  { label: "Budgets", to: "/budgets", icon: "budgets" },
+  { label: "Settings", href: "#settings", icon: "settings" },
+];
+
+const CATEGORY_ICON_MAP: Record<string, IconName> = {
+  Food: "food",
+  Transport: "transport",
+  Entertainment: "entertainment",
+  Healthcare: "health",
+  Shopping: "shopping",
+  Bills: "bills",
+  Savings: "piggy-bank",
+};
 
 const DashboardPage: React.FC = () => {
   const [summary, setSummary] = useState<DashboardSummaryResponse | null>(null);
   const [error, setError] = useState("");
-  const [selectedPeriod, setSelectedPeriod] = useState(1);
+  const [selectedPeriod, setSelectedPeriod] = useState(3);
   const { user, logout } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
     const controller = new AbortController();
 
-    const fetchSummary = async () => {
-      try {
-        console.log("Fetching dashboard summary...");
-        const response = await dashboardService.getDashboardSummary(controller.signal);
-        console.log("Dashboard response:", response);
+    dashboardService
+      .getDashboardSummary(controller.signal)
+      .then((response) => {
         setSummary(response.data ?? null);
-      } catch (err: any) {
-        if (err.name === "CanceledError") {
-          console.log("Dashboard request cancelled");
+        setError("");
+      })
+      .catch((err: any) => {
+        if (err?.name === "CanceledError") {
           return;
         }
-        console.error("Dashboard error:", err);
-        setError("Failed to fetch dashboard summary: " + (err.message || "Unknown error"));
-      }
-    };
+        setError(`Failed to fetch dashboard summary: ${err?.message || "Unknown error"}`);
+      });
 
-    fetchSummary();
-
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, []);
 
-  const currentDate = new Date().toLocaleDateString('en-GB', { 
-    day: '2-digit', 
-    month: '2-digit', 
-    year: 'numeric' 
-  });
+  const currentDate = useMemo(
+    () =>
+      new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+    []
+  );
 
-  // Filter data based on selected period
-  const getFilteredExpenses = () => {
-    if (!summary) return 0;
-    const now = new Date();
-    const cutoffDate = new Date();
-    cutoffDate.setMonth(now.getMonth() - selectedPeriod);
-    
-    // For now, use total expenses (can filter by date when we have dateOfExpense)
-    return summary.totalExpenses;
-  };
+  const filteredExpenses = useMemo(() => {
+    if (!summary?.recentTransactions?.length) {
+      return summary?.totalExpenses ?? 0;
+    }
 
-  const getFilteredSavings = () => {
-    return summary ? summary.totalSavings : 0;
-  };
+    const cutoff = new Date();
+    cutoff.setMonth(cutoff.getMonth() - (selectedPeriod - 1));
+    cutoff.setDate(1);
 
-  // Calculate percentages for spending statistics
-  const filteredExpenses = getFilteredExpenses();
-  const filteredSavings = getFilteredSavings();
-  const incomeTarget = 5000; // You can make this configurable later
+    return summary.recentTransactions
+      .filter((transaction) => {
+        if (!transaction.dateOfExpense) {
+          return false;
+        }
+        const date = new Date(transaction.dateOfExpense);
+        return date >= cutoff;
+      })
+      .reduce((total, transaction) => total + transaction.amount, 0);
+  }, [selectedPeriod, summary]);
+
+  const filteredSavings = summary?.totalSavings ?? 0;
+  const incomeTarget = 5000;
   const expensesPercentage = Math.min((filteredExpenses / incomeTarget) * 100, 100);
   const savingsPercentage = Math.min((filteredSavings / incomeTarget) * 100, 100);
 
-  // Get chart data from daily trend
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  
-  // Group by month for last 6 months
-  const getMonthlyData = () => {
-    if (!summary || !summary.recentTransactions) {
-      // Return empty data if no summary yet
-      const monthlyData: any[] = [];
-      const now = new Date();
-      for (let i = 5; i >= 0; i--) {
-        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        monthlyData.push({
-          month: monthNames[date.getMonth()],
-          income: 0,
-          outcome: 0
-        });
-      }
-      return monthlyData;
-    }
-    
-    const monthlyData: any[] = [];
+  const monthlyChartData = useMemo(() => {
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const now = new Date();
-    
-    for (let i = 5; i >= 0; i--) {
+    const monthlyData: Array<{ month: string; income: number; outcome: number }> = [];
+
+    for (let i = 5; i >= 0; i -= 1) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthName = monthNames[date.getMonth()];
-      
-      // Calculate expenses for this month
-      const monthExpenses = summary.recentTransactions
-        .filter(t => {
-          if (!t.dateOfExpense) return false;
-          const transDate = new Date(t.dateOfExpense);
-          return transDate.getMonth() === date.getMonth() && 
-                 transDate.getFullYear() === date.getFullYear();
-        })
-        .reduce((sum, t) => sum + t.amount, 0);
-      
-      monthlyData.push({
-        month: monthName,
-        income: 0, // Can add income tracking later
-        outcome: monthExpenses
-      });
-    }
-    
-    return monthlyData;
-  };
 
-  const monthlyChartData = getMonthlyData();
+      if (!summary?.recentTransactions?.length) {
+        monthlyData.push({ month: monthName, income: 0, outcome: 0 });
+        continue;
+      }
+
+      const monthExpenses = summary.recentTransactions
+        .filter((transaction) => {
+          if (!transaction.dateOfExpense) {
+            return false;
+          }
+          const transactionDate = new Date(transaction.dateOfExpense);
+          return (
+            transactionDate.getMonth() === date.getMonth() &&
+            transactionDate.getFullYear() === date.getFullYear()
+          );
+        })
+        .reduce((total, transaction) => total + transaction.amount, 0);
+
+      monthlyData.push({ month: monthName, income: 0, outcome: monthExpenses });
+    }
+
+    return monthlyData;
+  }, [summary]);
+
+  const resolveCategoryIcon = (category: string): IconName => CATEGORY_ICON_MAP[category] ?? "other";
+
+  const maxOutcomeValue = useMemo(() => {
+    if (!monthlyChartData.length) {
+      return 100;
+    }
+    const maxValue = Math.max(...monthlyChartData.map((data) => data.outcome));
+    return Math.max(maxValue, 100);
+  }, [monthlyChartData]);
 
   return (
     <div className="airpay">
       {/* Sidebar */}
       <aside className="airpay__sidebar">
         <div className="airpay__brand">
-          <div className="airpay__logo">📱</div>
-          <h1 className="airpay__title">Air Pay</h1>
+          <div className="airpay__logo">
+            <Icon name="logo" size={34} />
+          </div>
+          <div>
+            <h1 className="airpay__title">VINGOSI ET</h1>
+            <span className="airpay__subtitle">Personal finance studio</span>
+          </div>
         </div>
 
         <nav className="airpay__nav">
-          <Link to="/dashboard" className="airpay__nav-item airpay__nav-item--active">
-            <span className="airpay__nav-icon">📊</span>
-            <span>Dashboard</span>
-          </Link>
-          <Link to="/expenses" className="airpay__nav-item">
-            <span className="airpay__nav-icon">💸</span>
-            <span>Expenses</span>
-          </Link>
-          <Link to="/savings" className="airpay__nav-item">
-            <span className="airpay__nav-icon">💰</span>
-            <span>Savings</span>
-          </Link>
-          <Link to="/budgets" className="airpay__nav-item">
-            <span className="airpay__nav-icon">📈</span>
-            <span>Budgets</span>
-          </Link>
-          <a href="#settings" className="airpay__nav-item">
-            <span className="airpay__nav-icon">⚙️</span>
-            <span>Settings</span>
-          </a>
+          {NAV_ITEMS.map((item) => {
+            if ("to" in item) {
+              const isActive = location.pathname.startsWith(item.to);
+              return (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  className={`airpay__nav-item${isActive ? " airpay__nav-item--active" : ""}`}
+                >
+                  <Icon name={item.icon} size={20} className="airpay__nav-icon" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            }
+
+            return (
+              <a key={item.label} href={item.href} className="airpay__nav-item">
+                <Icon name={item.icon} size={20} className="airpay__nav-icon" />
+                <span>{item.label}</span>
+              </a>
+            );
+          })}
         </nav>
 
-        <div className="airpay__premium">
-          <div className="airpay__premium-badge">⭐</div>
-          <h3 className="airpay__premium-title">Get Premium</h3>
-          <p className="airpay__premium-text">Unlimited functions and encrypted recovery</p>
-          <button className="airpay__premium-btn">
-            <span>Upgrade</span>
-            <span className="airpay__premium-icon">🔒</span>
-          </button>
-        </div>
-
-        <button onClick={logout} className="airpay__logout">Logout</button>
+        <button onClick={logout} className="airpay__logout" type="button">
+          <span>Logout</span>
+          <Icon name="arrow-right" size={18} className="airpay__logout-icon" />
+        </button>
       </aside>
 
       {/* Main Content */}
@@ -164,106 +182,106 @@ const DashboardPage: React.FC = () => {
         {/* Header */}
         <header className="airpay__header">
           <div className="airpay__search">
-            <span className="airpay__search-icon">🔍</span>
-            <input type="text" placeholder="Search" className="airpay__search-input" />
+            <Icon name="search" size={20} className="airpay__search-icon" />
+            <input type="search" placeholder="Search anything..." className="airpay__search-input" />
           </div>
-          
+
           <div className="airpay__header-actions">
-            <div className="airpay__date">{currentDate}</div>
-            <div className="airpay__lang">
-              <span>En</span>
-              <span className="airpay__dropdown-icon">▼</span>
+            <div className="airpay__date">
+              <Icon name="calendar" size={18} />
+              <span>{currentDate}</span>
             </div>
+            <button type="button" className="airpay__notification" aria-label="Notifications">
+              <Icon name="bell" size={18} />
+            </button>
             <div className="airpay__user">
-              <img 
-                src="https://i.pravatar.cc/150?img=12" 
-                alt={user?.name || "User"} 
+              <img
+                src="https://i.pravatar.cc/150?img=12"
+                alt={user?.firstName ?? "User avatar"}
                 className="airpay__user-avatar"
               />
-              <span className="airpay__user-name">{user?.name || "User"}</span>
-              <span className="airpay__dropdown-icon">▼</span>
+              <span className="airpay__user-name">{user?.firstName ?? user?.email ?? "Guest"}</span>
             </div>
           </div>
         </header>
 
-        {error && <p className="airpay__error">{error}</p>}
+        {error && <div className="airpay__error">{error}</div>}
 
-        {/* Content Grid */}
         <div className="airpay__content">
-          {/* Balance Card */}
+
           <div className="airpay__balance">
             <div className="airpay__balance-header">
-              <div className="airpay__balance-label">Balance details</div>
-              <button className="airpay__balance-menu">⋮</button>
+              <div>
+                <p className="airpay__balance-label">Current Balance</p>
+                <h2 className="airpay__balance-value">${Number(summary?.balance ?? 0).toFixed(2)}</h2>
+              </div>
+              <div className="airpay__balance-trend">
+                <Icon name="trend-up" size={18} className="airpay__balance-trend-icon" />
+                <span className="airpay__balance-trend-value">+12.5%</span>
+              </div>
             </div>
-            <div className="airpay__balance-amount">
-              $ {summary?.balance != null ? summary.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '10,000.00'}
+
+            <div className="airpay__balance-chart">
+              <div className="airpay__balance-chart-bar airpay__balance-chart-bar--1" />
+              <div className="airpay__balance-chart-bar airpay__balance-chart-bar--2" />
+              <div className="airpay__balance-chart-bar airpay__balance-chart-bar--3" />
+              <div className="airpay__balance-chart-bar airpay__balance-chart-bar--4" />
             </div>
-            <div className="airpay__balance-sub">
-              € {summary?.balance != null ? (summary.balance * 0.85).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '8,500.00'}
-            </div>
+
             <div className="airpay__balance-footer">
-              <div className="airpay__balance-account">
-                <div className="airpay__balance-account-label">Starting Balance</div>
-                <div className="airpay__balance-account-number">
-                  ${summary?.startingBalance != null ? summary.startingBalance.toLocaleString() : '10,000'}
-                </div>
+              <div>
+                <p className="airpay__balance-caption">Monthly change</p>
+                <strong className="airpay__balance-delta">$427.32</strong>
+              </div>
+              <div>
+                <p className="airpay__balance-caption">Avg. spend</p>
+                <strong className="airpay__balance-delta">$162.11</strong>
               </div>
             </div>
           </div>
 
-          {/* Spending Statistics */}
+
           <div className="airpay__stats">
-            <div className="airpay__stats-header">
-              <h3 className="airpay__stats-title">SPENDING STATISTICS</h3>
-              <select 
-                className="airpay__period" 
-                value={selectedPeriod} 
-                onChange={(e) => setSelectedPeriod(parseInt(e.target.value))}
-              >
-                <option value={1}>1 month</option>
-                <option value={3}>3 months</option>
-                <option value={6}>6 months</option>
-                <option value={12}>1 year</option>
-              </select>
+            <div className="airpay__stat-item">
+              <div className="airpay__stat-header">
+                <Icon name="wallet" size={20} className="airpay__stat-icon" />
+                <span className="airpay__stat-label">Total Expenses</span>
+              </div>
+              <div className="airpay__stat-value">${filteredExpenses.toFixed(2)}</div>
+              <div className="airpay__stat-bar">
+                <div className="airpay__stat-progress" style={{ width: `${expensesPercentage}%` }} />
+              </div>
+              <div className="airpay__stat-percent">{expensesPercentage.toFixed(0)}% of budget</div>
             </div>
 
-            <div className="airpay__stats-grid">
-              <div className="airpay__stat-item">
-                <div className="airpay__stat-header">
-                  <span className="airpay__stat-icon">💸</span>
-                  <span className="airpay__stat-label">Total Expenses</span>
-                </div>
-                <div className="airpay__stat-value">${filteredExpenses?.toFixed(2) || '0.00'}</div>
-                <div className="airpay__stat-bar">
-                  <div className="airpay__stat-progress" style={{ width: `${expensesPercentage}%` }}></div>
-                </div>
-                <div className="airpay__stat-percent">{expensesPercentage.toFixed(0)}% of budget</div>
+            <div className="airpay__stat-item">
+              <div className="airpay__stat-header">
+                <Icon name="piggy-bank" size={20} className="airpay__stat-icon airpay__stat-icon--accent" />
+                <span className="airpay__stat-label">Total Savings</span>
               </div>
+              <div className="airpay__stat-value">${filteredSavings.toFixed(2)}</div>
+              <div className="airpay__stat-bar airpay__stat-bar--yellow">
+                <div className="airpay__stat-progress" style={{ width: `${savingsPercentage}%` }} />
+              </div>
+              <div className="airpay__stat-percent">{savingsPercentage.toFixed(0)}% of target</div>
+            </div>
 
-              <div className="airpay__stat-item">
-                <div className="airpay__stat-header">
-                  <span className="airpay__stat-icon">💰</span>
-                  <span className="airpay__stat-label">Total Savings</span>
-                </div>
-                <div className="airpay__stat-value">${filteredSavings?.toFixed(2) || '0.00'}</div>
-                <div className="airpay__stat-bar airpay__stat-bar--yellow">
-                  <div className="airpay__stat-progress" style={{ width: `${savingsPercentage}%` }}></div>
-                </div>
-                <div className="airpay__stat-percent">{savingsPercentage.toFixed(0)}% of target</div>
-              </div>
-
-              <div className="airpay__add-stat">
-                <Link to="/expenses/add" className="airpay__add-stat-btn">+<br/>Add</Link>
-              </div>
+            <div className="airpay__add-stat">
+              <Link to="/expenses/add" className="airpay__add-stat-btn">
+                <Icon name="plus" size={18} />
+                <span>New expense</span>
+              </Link>
             </div>
           </div>
 
-          {/* Transactions History */}
+
           <div className="airpay__transactions">
             <div className="airpay__transactions-header">
-              <h3 className="airpay__transactions-title">TRANSACTIONS HISTORY</h3>
-              <Link to="/expenses" className="airpay__transactions-link">See all →</Link>
+              <h3 className="airpay__transactions-title">Transactions history</h3>
+              <Link to="/expenses" className="airpay__transactions-link">
+                <span>See all</span>
+                <Icon name="arrow-right" size={16} />
+              </Link>
             </div>
 
             <div className="airpay__transactions-list">
@@ -271,25 +289,28 @@ const DashboardPage: React.FC = () => {
                 summary.recentTransactions.slice(0, 4).map((transaction) => (
                   <div key={transaction.id} className="airpay__transaction">
                     <div className="airpay__transaction-icon">
-                      {transaction.category === 'Food' ? '🍔' :
-                       transaction.category === 'Transport' ? '🚗' :
-                       transaction.category === 'Entertainment' ? '🎮' :
-                       transaction.category === 'Healthcare' ? '💊' :
-                       transaction.category === 'Shopping' ? '🛍️' : '💸'}
+                      <Icon name={resolveCategoryIcon(transaction.category)} size={22} />
                     </div>
                     <div className="airpay__transaction-info">
-                      <div className="airpay__transaction-name">{transaction.description || transaction.category}</div>
+                      <div className="airpay__transaction-name">
+                        {transaction.description || transaction.category}
+                      </div>
                       <div className="airpay__transaction-date">
-                        {(() => {
-                          if (!transaction.dateOfExpense) return 'Recently';
-                          const date = new Date(transaction.dateOfExpense);
-                          return date.toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          });
-                        })()}
+                        <Icon name="clock" size={14} />
+                        <span>
+                          {(() => {
+                            if (!transaction.dateOfExpense) {
+                              return "Recently";
+                            }
+                            const date = new Date(transaction.dateOfExpense);
+                            return date.toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            });
+                          })()}
+                        </span>
                       </div>
                     </div>
                     <div className="airpay__transaction-amount">-${transaction.amount.toFixed(2)}</div>
@@ -297,60 +318,66 @@ const DashboardPage: React.FC = () => {
                 ))
               ) : (
                 <div className="airpay__transaction-empty">
+                  <Icon name="inbox" size={32} className="airpay__transaction-empty-icon" />
                   <p>No transactions yet</p>
-                  <Link to="/expenses/add" className="airpay__transaction-add-link">Add your first expense</Link>
+                  <Link to="/expenses/add" className="airpay__transaction-add-link">
+                    Add your first expense
+                  </Link>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Expenses Classification Chart */}
+
           <div className="airpay__chart">
             <div className="airpay__chart-header">
-              <h3 className="airpay__chart-title">EXPENSES CLASSIFICATION</h3>
-              <select className="airpay__period">
-                <option>6 months</option>
-                <option>3 months</option>
-                <option>1 year</option>
+              <h3 className="airpay__chart-title">Expenses classification</h3>
+              <select
+                className="airpay__period"
+                value={selectedPeriod}
+                onChange={(event) => setSelectedPeriod(Number(event.target.value))}
+              >
+                <option value={1}>Last month</option>
+                <option value={3}>Last 3 months</option>
+                <option value={6}>Last 6 months</option>
+                <option value={12}>Last year</option>
               </select>
             </div>
 
             <div className="airpay__chart-container">
               <div className="airpay__chart-bars">
-                {monthlyChartData.map((data, index) => {
-                  const maxValue = Math.max(...monthlyChartData.map(d => d.outcome), 100);
-                  return (
-                    <div key={index} className="airpay__chart-column">
-                      <div className="airpay__chart-bar-group">
-                        <div 
-                          className="airpay__chart-bar airpay__chart-bar--income" 
-                          style={{ height: `${(data.income / maxValue) * 100}%` }}
-                          title={`Income: $${data.income.toFixed(0)}`}
-                        ></div>
-                        <div 
-                          className="airpay__chart-bar airpay__chart-bar--outcome" 
-                          style={{ height: `${(data.outcome / maxValue) * 100}%` }}
-                          title={`Expenses: $${data.outcome.toFixed(0)}`}
-                        ></div>
-                      </div>
-                      <div className="airpay__chart-label">{data.month}</div>
+                {monthlyChartData.map((data) => (
+                  <div key={data.month} className="airpay__chart-column">
+                    <div className="airpay__chart-bar-group">
+                      <div
+                        className="airpay__chart-bar airpay__chart-bar--income"
+                        style={{ height: `${(data.income / maxOutcomeValue) * 100}%` }}
+                        title={`Income: $${data.income.toFixed(0)}`}
+                      />
+                      <div
+                        className="airpay__chart-bar airpay__chart-bar--outcome"
+                        style={{ height: `${(data.outcome / maxOutcomeValue) * 100}%` }}
+                        title={`Expenses: $${data.outcome.toFixed(0)}`}
+                      />
                     </div>
-                  );
-                })}
+                    <div className="airpay__chart-label">{data.month}</div>
+                  </div>
+                ))}
               </div>
 
               <div className="airpay__chart-legend">
                 <div className="airpay__chart-legend-item">
-                  <span className="airpay__chart-legend-color airpay__chart-legend-color--income"></span>
+                  <span className="airpay__chart-legend-color airpay__chart-legend-color--income" />
                   <span>Income</span>
                 </div>
                 <div className="airpay__chart-legend-item">
-                  <span className="airpay__chart-legend-color airpay__chart-legend-color--outcome"></span>
+                  <span className="airpay__chart-legend-color airpay__chart-legend-color--outcome" />
                   <span>Outcome</span>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </main>
     </div>
@@ -358,3 +385,6 @@ const DashboardPage: React.FC = () => {
 };
 
 export default DashboardPage;
+
+
+

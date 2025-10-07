@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./LoginPage.css";
 import { useAuth } from "../hooks/auth-hook";
+import { Icon } from "../components/Icon";
 
 const LoginPage = () => {
   const [email, setEmail] = useState<string>('');
@@ -48,13 +49,9 @@ const LoginPage = () => {
         <div className="auth-page__brand">
           <div className="auth-page__logo">
             <div className="auth-page__logo-icon">
-              <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="60" height="60" rx="15" fill="white" fillOpacity="0.2"/>
-                <path d="M30 15L42 25H38V40C38 41.1046 37.1046 42 36 42H24C22.8954 42 22 41.1046 22 40V25H18L30 15Z" fill="white"/>
-                <circle cx="30" cy="32" r="3" fill="#2d5f4d"/>
-              </svg>
+              <Icon name="logo" size={52} />
             </div>
-            <h1 className="auth-page__logo-text">VINGOSI</h1>
+            <h1 className="auth-page__logo-text">VINGOSI ET</h1>
           </div>
           
           <div className="auth-page__welcome">
@@ -67,11 +64,7 @@ const LoginPage = () => {
           <div className="auth-page__features">
             <div className="auth-page__feature">
               <div className="auth-page__feature-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+                <Icon name="expenses" size={26} />
               </div>
               <div className="auth-page__feature-text">
                 <h3>Track Expenses</h3>
@@ -80,10 +73,7 @@ const LoginPage = () => {
             </div>
             <div className="auth-page__feature">
               <div className="auth-page__feature-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="2"/>
-                  <path d="M12 6V12L16 14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
+                <Icon name="budgets" size={26} />
               </div>
               <div className="auth-page__feature-text">
                 <h3>Manage Budget</h3>
@@ -92,9 +82,7 @@ const LoginPage = () => {
             </div>
             <div className="auth-page__feature">
               <div className="auth-page__feature-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M18 20V10M12 20V4M6 20V14" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+                <Icon name="trend-up" size={26} />
               </div>
               <div className="auth-page__feature-text">
                 <h3>Visual Analytics</h3>
@@ -114,7 +102,7 @@ const LoginPage = () => {
 
             {error && (
               <div className="auth-page__error">
-                <span className="auth-page__error-icon">⚠️</span>
+                <span className="auth-page__error-icon"><Icon name="alert" size={18} /></span>
                 <span>{error}</span>
               </div>
             )}
@@ -183,7 +171,7 @@ const LoginPage = () => {
                 ) : (
                   <>
                     <span>Sign In</span>
-                    <span className="auth-page__button-icon">→</span>
+                    <span className="auth-page__button-icon"><Icon name="arrow-right" size={18} /></span>
                   </>
                 )}
               </button>
@@ -225,3 +213,6 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+
+
