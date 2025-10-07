@@ -70,9 +70,9 @@ const RegisterPage = () => {
           <div className="auth-page__logo">
             <div className="auth-page__logo-icon">
               <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="60" height="60" rx="12" fill="white" fillOpacity="0.2"/>
-                <path d="M30 15L42 25V40C42 41.1046 41.1046 42 40 42H20C18.8954 42 18 41.1046 18 40V25L30 15Z" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M25 30H35M30 25V35" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+                <rect width="60" height="60" rx="15" fill="white" fillOpacity="0.2"/>
+                <path d="M30 15L42 25H38V40C38 41.1046 37.1046 42 36 42H24C22.8954 42 22 41.1046 22 40V25H18L30 15Z" fill="white"/>
+                <circle cx="30" cy="32" r="3" fill="#2d5f4d"/>
               </svg>
             </div>
             <h1 className="auth-page__logo-text">VINGOSI</h1>
@@ -132,8 +132,7 @@ const RegisterPage = () => {
                 </label>
                 <div className="auth-page__input-wrapper">
                   <svg className="auth-page__input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 10C12.21 10 14 8.21 14 6C14 3.79 12.21 2 10 2C7.79 2 6 3.79 6 6C6 8.21 7.79 10 10 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M2 18C2 14.69 5.69 12 10 12C14.31 12 18 14.69 18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10ZM10 12.5C6.66667 12.5 0 14.175 0 17.5V20H20V17.5C20 14.175 13.3333 12.5 10 12.5Z" fill="currentColor"/>
                   </svg>
                   <input
                     id="name"
@@ -154,8 +153,7 @@ const RegisterPage = () => {
                 </label>
                 <div className="auth-page__input-wrapper">
                   <svg className="auth-page__input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 4H17C18.1 4 19 4.9 19 6V14C19 15.1 18.1 16 17 16H3C1.9 16 1 15.1 1 14V6C1 4.9 1.9 4 3 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M19 6L10 11L1 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M2.5 5.83333L10 10.8333L17.5 5.83333M3.33333 15H16.6667C17.5871 15 18.3333 14.2538 18.3333 13.3333V6.66667C18.3333 5.74619 17.5871 5 16.6667 5H3.33333C2.41286 5 1.66667 5.74619 1.66667 6.66667V13.3333C1.66667 14.2538 2.41286 15 3.33333 15Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                   <input
                     id="email"
@@ -176,8 +174,7 @@ const RegisterPage = () => {
                 </label>
                 <div className="auth-page__input-wrapper">
                   <svg className="auth-page__input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="9" width="14" height="9" rx="2" stroke="currentColor" strokeWidth="2"/>
-                    <path d="M6 9V6C6 3.79086 7.79086 2 10 2C12.2091 2 14 3.79086 14 6V9" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M5.83333 8.33333V6.66667C5.83333 4.36548 7.69881 2.5 10 2.5C12.3012 2.5 14.1667 4.36548 14.1667 6.66667V8.33333M10 12.0833V13.75M6.66667 17.5H13.3333C14.2538 17.5 15 16.7538 15 15.8333V10C15 9.07953 14.2538 8.33333 13.3333 8.33333H6.66667C5.74619 8.33333 5 9.07953 5 10V15.8333C5 16.7538 5.74619 17.5 6.66667 17.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                   <input
                     id="password"
@@ -199,8 +196,7 @@ const RegisterPage = () => {
                 </label>
                 <div className="auth-page__input-wrapper">
                   <svg className="auth-page__input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14 7C14 9.21 12.21 11 10 11C7.79 11 6 9.21 6 7C6 4.79 7.79 3 10 3C12.21 3 14 4.79 14 7Z" stroke="currentColor" strokeWidth="2"/>
-                    <path d="M10 11L10 17M10 17L7 14M10 17L13 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12.5 8.33333C14.3409 8.33333 15.8333 6.84095 15.8333 5C15.8333 3.15905 14.3409 1.66667 12.5 1.66667C10.659 1.66667 9.16663 3.15905 9.16663 5C9.16663 5.38384 9.22404 5.75461 9.32996 6.10417L2.49996 12.9342V17.5H7.06579L9.89579 14.67C10.2454 14.776 10.6161 14.8333 11 14.8333C11.3838 14.8333 11.7546 14.776 12.1042 14.67L12.5 15.0658V17.5H15V15.0658L16.4342 13.6317C16.7783 13.2875 17 12.8142 17 12.3183V11.6667C17 10.5621 16.1046 9.66667 15 9.66667H13.3333L12.5 8.83333V8.33333Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                   <input
                     id="confirmPassword"
@@ -250,18 +246,18 @@ const RegisterPage = () => {
             <div className="auth-page__social">
               <button className="auth-page__social-btn" type="button">
                 <svg className="auth-page__social-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M18.2 10.2c0-4.4-3.6-8-8-8s-8 3.6-8 8c0 4 2.9 7.3 6.7 7.9v-5.6H6.7v-2.3h2.2V8.3c0-2.2 1.3-3.4 3.3-3.4.9 0 1.9.2 1.9.2v2.1h-1.1c-1.1 0-1.4.7-1.4 1.4v1.7h2.4l-.4 2.3h-2v5.6c3.8-.6 6.7-3.9 6.7-7.9z" fill="#1877F2"/>
+                  <path d="M18.1713 8.36788H17.5001V8.33329H10.0001V11.6666H14.7096C14.0225 13.607 12.1763 15 10.0001 15C7.23882 15 5.00007 12.7612 5.00007 9.99996C5.00007 7.23871 7.23882 4.99996 10.0001 4.99996C11.2746 4.99996 12.4342 5.48079 13.3171 6.26621L15.6742 3.90913C14.1859 2.52204 12.1951 1.66663 10.0001 1.66663C5.39798 1.66663 1.66675 5.39788 1.66675 9.99996C1.66675 14.602 5.39798 18.3333 10.0001 18.3333C14.6021 18.3333 18.3334 14.602 18.3334 9.99996C18.3334 9.44121 18.2759 8.89579 18.1713 8.36788Z" fill="#FFC107"/>
+                  <path d="M2.6275 6.12121L5.36542 8.12913C6.10625 6.29496 7.90042 4.99996 10.0004 4.99996C11.2754 4.99996 12.4346 5.48079 13.3175 6.26621L15.6746 3.90913C14.1863 2.52204 12.1954 1.66663 10.0004 1.66663C6.79917 1.66663 4.02334 3.47371 2.6275 6.12121Z" fill="#FF3D00"/>
+                  <path d="M10.0004 18.3333C12.1525 18.3333 14.1092 17.5095 15.5871 16.162L13.0079 13.9874C12.1431 14.6452 11.0864 15.0008 10.0004 15C7.83252 15 5.99169 13.6179 5.29877 11.6891L2.58252 13.783C3.96044 16.4816 6.7596 18.3333 10.0004 18.3333Z" fill="#4CAF50"/>
+                  <path d="M18.1713 8.36796H17.5V8.33337H10V11.6667H14.7096C14.3809 12.5902 13.7889 13.3972 13.0067 13.9879L13.0079 13.9871L15.5871 16.1617C15.4046 16.3275 18.3333 14.1667 18.3333 10C18.3333 9.44129 18.2758 8.89587 18.1713 8.36796Z" fill="#1976D2"/>
                 </svg>
-                <span>Facebook</span>
+                <span>Google</span>
               </button>
               <button className="auth-page__social-btn" type="button">
                 <svg className="auth-page__social-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M18.2 10.2c0-.8-.1-1.5-.2-2.3H10v2.3h4.6c-.2 1.1-.8 2-1.7 2.6v2.1h2.7c1.6-1.5 2.5-3.7 2.5-6.3z" fill="#4285F4"/>
-                  <path d="M10 18.5c2.3 0 4.2-.8 5.6-2.1l-2.7-2.1c-.8.5-1.8.8-2.9.8-2.2 0-4.1-1.5-4.8-3.5H2.4v2.2c1.4 2.8 4.3 4.7 7.6 4.7z" fill="#34A853"/>
-                  <path d="M5.2 11.6c-.2-.5-.3-1-.3-1.6s.1-1.1.3-1.6V6.2H2.4C1.6 7.7 1.2 9.3 1.2 10s.4 2.3 1.2 3.8l2.8-2.2z" fill="#FBBC05"/>
-                  <path d="M10 4.2c1.2 0 2.3.4 3.2 1.2l2.4-2.4C14.2 1.6 12.2.7 10 .7 6.7.7 3.8 2.6 2.4 5.4l2.8 2.2c.7-2 2.6-3.4 4.8-3.4z" fill="#EA4335"/>
+                  <path d="M20 10C20 4.47715 15.5229 0 10 0C4.47715 0 0 4.47715 0 10C0 14.9912 3.65684 19.1283 8.4375 19.8785V12.8906H5.89844V10H8.4375V7.79688C8.4375 5.29063 9.93047 3.90625 12.2146 3.90625C13.3084 3.90625 14.4531 4.10156 14.4531 4.10156V6.5625H13.1922C11.95 6.5625 11.5625 7.3334 11.5625 8.125V10H14.3359L13.8926 12.8906H11.5625V19.8785C16.3432 19.1283 20 14.9912 20 10Z" fill="#1877F2"/>
                 </svg>
-                <span>Google</span>
+                <span>Facebook</span>
               </button>
             </div>
 

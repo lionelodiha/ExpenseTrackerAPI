@@ -66,21 +66,36 @@ const LoginPage = () => {
 
           <div className="auth-page__features">
             <div className="auth-page__feature">
-              <div className="auth-page__feature-icon">✨</div>
+              <div className="auth-page__feature-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
               <div className="auth-page__feature-text">
                 <h3>Track Expenses</h3>
                 <p>Monitor your spending in real-time</p>
               </div>
             </div>
             <div className="auth-page__feature">
-              <div className="auth-page__feature-icon">💰</div>
+              <div className="auth-page__feature-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="2"/>
+                  <path d="M12 6V12L16 14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </div>
               <div className="auth-page__feature-text">
                 <h3>Manage Budget</h3>
                 <p>Stay on top of your financial goals</p>
               </div>
             </div>
             <div className="auth-page__feature">
-              <div className="auth-page__feature-icon">📊</div>
+              <div className="auth-page__feature-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 20V10M12 20V4M6 20V14" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
               <div className="auth-page__feature-text">
                 <h3>Visual Analytics</h3>
                 <p>Beautiful charts and insights</p>
