@@ -16,14 +16,17 @@ const DashboardPage: React.FC = () => {
 
     const fetchSummary = async () => {
       try {
+        console.log("Fetching dashboard summary...");
         const response = await dashboardService.getDashboardSummary(controller.signal);
+        console.log("Dashboard response:", response);
         setSummary(response.data ?? null);
       } catch (err: any) {
         if (err.name === "CanceledError") {
           console.log("Dashboard request cancelled");
           return;
         }
-        setError("Failed to fetch dashboard summary.");
+        console.error("Dashboard error:", err);
+        setError("Failed to fetch dashboard summary: " + (err.message || "Unknown error"));
       }
     };
 
@@ -193,12 +196,18 @@ const DashboardPage: React.FC = () => {
               <div className="airpay__balance-label">Balance details</div>
               <button className="airpay__balance-menu">⋮</button>
             </div>
-            <div className="airpay__balance-amount">$ {summary ? summary.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '10,000.00'}</div>
-            <div className="airpay__balance-sub">€ {summary ? (summary.balance * 0.85).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '8,500.00'}</div>
+            <div className="airpay__balance-amount">
+              $ {summary?.balance != null ? summary.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '10,000.00'}
+            </div>
+            <div className="airpay__balance-sub">
+              € {summary?.balance != null ? (summary.balance * 0.85).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '8,500.00'}
+            </div>
             <div className="airpay__balance-footer">
               <div className="airpay__balance-account">
                 <div className="airpay__balance-account-label">Starting Balance</div>
-                <div className="airpay__balance-account-number">${summary ? summary.startingBalance.toLocaleString() : '10,000'}</div>
+                <div className="airpay__balance-account-number">
+                  ${summary?.startingBalance != null ? summary.startingBalance.toLocaleString() : '10,000'}
+                </div>
               </div>
             </div>
           </div>
@@ -225,7 +234,7 @@ const DashboardPage: React.FC = () => {
                   <span className="airpay__stat-icon">💸</span>
                   <span className="airpay__stat-label">Total Expenses</span>
                 </div>
-                <div className="airpay__stat-value">${filteredExpenses.toFixed(2)}</div>
+                <div className="airpay__stat-value">${filteredExpenses?.toFixed(2) || '0.00'}</div>
                 <div className="airpay__stat-bar">
                   <div className="airpay__stat-progress" style={{ width: `${expensesPercentage}%` }}></div>
                 </div>
@@ -237,7 +246,7 @@ const DashboardPage: React.FC = () => {
                   <span className="airpay__stat-icon">💰</span>
                   <span className="airpay__stat-label">Total Savings</span>
                 </div>
-                <div className="airpay__stat-value">${filteredSavings.toFixed(2)}</div>
+                <div className="airpay__stat-value">${filteredSavings?.toFixed(2) || '0.00'}</div>
                 <div className="airpay__stat-bar airpay__stat-bar--yellow">
                   <div className="airpay__stat-progress" style={{ width: `${savingsPercentage}%` }}></div>
                 </div>
