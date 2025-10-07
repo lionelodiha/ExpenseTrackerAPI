@@ -63,11 +63,25 @@ const DashboardPage: React.FC = () => {
   const savingsPercentage = Math.min((filteredSavings / incomeTarget) * 100, 100);
 
   // Get chart data from daily trend
-  const chartData = summary?.dailyTrend || [];
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   
   // Group by month for last 6 months
   const getMonthlyData = () => {
+    if (!summary || !summary.recentTransactions) {
+      // Return empty data if no summary yet
+      const monthlyData: any[] = [];
+      const now = new Date();
+      for (let i = 5; i >= 0; i--) {
+        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        monthlyData.push({
+          month: monthNames[date.getMonth()],
+          income: 0,
+          outcome: 0
+        });
+      }
+      return monthlyData;
+    }
+    
     const monthlyData: any[] = [];
     const now = new Date();
     
@@ -76,13 +90,14 @@ const DashboardPage: React.FC = () => {
       const monthName = monthNames[date.getMonth()];
       
       // Calculate expenses for this month
-      const monthExpenses = summary?.recentTransactions
-        ?.filter(t => {
-          const transDate = new Date(t.dateOfExpense || '');
+      const monthExpenses = summary.recentTransactions
+        .filter(t => {
+          if (!t.dateOfExpense) return false;
+          const transDate = new Date(t.dateOfExpense);
           return transDate.getMonth() === date.getMonth() && 
                  transDate.getFullYear() === date.getFullYear();
         })
-        .reduce((sum, t) => sum + t.amount, 0) || 0;
+        .reduce((sum, t) => sum + t.amount, 0);
       
       monthlyData.push({
         month: monthName,
