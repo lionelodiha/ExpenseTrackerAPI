@@ -1,10 +1,12 @@
-﻿import type { BudgetSummaryResponse } from "../budgets/budget-summary-response";
+import type { BudgetSummaryResponse } from "../budgets/budget-summary-response";
 import type { CategorySpendingDto } from "./category-spending-dto";
 import type { DailySpendingDto } from "./daily-spending-dto";
 import type { RecentTransactionDto } from "./recent-transaction-dto";
 import type { SavingGoalProgressDto } from "./saving-goal-progress-dto";
 
 export interface DashboardSummaryResponse {
+  balance: number;
+  startingBalance: number;
   totalExpenses: number;
   totalSavings: number;
   budgets: BudgetSummaryResponse[];

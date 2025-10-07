@@ -159,10 +159,10 @@ const DashboardPage: React.FC = () => {
             <div className="airpay__user">
               <img 
                 src="https://i.pravatar.cc/150?img=12" 
-                alt="Sarah Miller" 
+                alt={user?.name || "User"} 
                 className="airpay__user-avatar"
               />
-              <span className="airpay__user-name">Sarah Miller</span>
+              <span className="airpay__user-name">{user?.name || "User"}</span>
               <span className="airpay__dropdown-icon">▼</span>
             </div>
           </div>
@@ -178,12 +178,12 @@ const DashboardPage: React.FC = () => {
               <div className="airpay__balance-label">Balance details</div>
               <button className="airpay__balance-menu">⋮</button>
             </div>
-            <div className="airpay__balance-amount">$ {summary ? summary.totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '25,657.00'}</div>
-            <div className="airpay__balance-sub">€ {summary ? (summary.totalExpenses * 0.85).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '20,882.92'}</div>
+            <div className="airpay__balance-amount">$ {summary ? summary.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '10,000.00'}</div>
+            <div className="airpay__balance-sub">€ {summary ? (summary.balance * 0.85).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '8,500.00'}</div>
             <div className="airpay__balance-footer">
               <div className="airpay__balance-account">
-                <div className="airpay__balance-account-label">Account number</div>
-                <div className="airpay__balance-account-number">82568147C942F9F566b1</div>
+                <div className="airpay__balance-account-label">Starting Balance</div>
+                <div className="airpay__balance-account-number">${summary ? summary.startingBalance.toLocaleString() : '10,000'}</div>
               </div>
             </div>
           </div>

@@ -201,7 +201,13 @@ app.get('/api/v1/dashboard/summary', authenticateToken, (req, res) => {
     });
   }
   
+  // Calculate balance: Starting balance - expenses - savings
+  const STARTING_BALANCE = 10000;
+  const currentBalance = STARTING_BALANCE - totalExpenses - totalSavings;
+  
   const dashboardData = {
+    balance: currentBalance,
+    startingBalance: STARTING_BALANCE,
     totalExpenses,
     totalSavings,
     budgets: [], // Can add budget tracking later
