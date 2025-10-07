@@ -8,7 +8,7 @@ import "./DashboardPage.css";
 const DashboardPage: React.FC = () => {
   const [summary, setSummary] = useState<DashboardSummaryResponse | null>(null);
   const [error, setError] = useState("");
-  const [selectedPeriod, setSelectedPeriod] = useState("1 month");
+  const [selectedPeriod, setSelectedPeriod] = useState(1);
   const { user, logout } = useAuth();
 
   useEffect(() => {
@@ -40,18 +40,61 @@ const DashboardPage: React.FC = () => {
     year: 'numeric' 
   });
 
-  // Calculate percentages for spending statistics
-  const transactionPercentage = summary ? Math.min((summary.totalExpenses / 1000) * 100, 100) : 0;
-  const entertainmentSpending = summary?.categoryBreakdown.find(c => c.category === 'Entertainment')?.totalSpent || 0;
-  const entertainmentPercentage = Math.min((entertainmentSpending / 500) * 100, 100);
+  // Filter data based on selected period
+  const getFilteredExpenses = () => {
+    if (!summary) return 0;
+    const now = new Date();
+    const cutoffDate = new Date();
+    cutoffDate.setMonth(now.getMonth() - selectedPeriod);
+    
+    // For now, use total expenses (can filter by date when we have dateOfExpense)
+    return summary.totalExpenses;
+  };
 
-  // Get monthly data for chart (last 6 months)
-  const months = ['March', 'April', 'May', 'June', 'July', 'August'];
-  const chartData = months.map((month, index) => ({
-    month,
-    income: Math.random() * 2000 + 1000,
-    outcome: Math.random() * 2000 + 500
-  }));
+  const getFilteredSavings = () => {
+    return summary ? summary.totalSavings : 0;
+  };
+
+  // Calculate percentages for spending statistics
+  const filteredExpenses = getFilteredExpenses();
+  const filteredSavings = getFilteredSavings();
+  const incomeTarget = 5000; // You can make this configurable later
+  const expensesPercentage = Math.min((filteredExpenses / incomeTarget) * 100, 100);
+  const savingsPercentage = Math.min((filteredSavings / incomeTarget) * 100, 100);
+
+  // Get chart data from daily trend
+  const chartData = summary?.dailyTrend || [];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  
+  // Group by month for last 6 months
+  const getMonthlyData = () => {
+    const monthlyData: any[] = [];
+    const now = new Date();
+    
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthName = monthNames[date.getMonth()];
+      
+      // Calculate expenses for this month
+      const monthExpenses = summary?.recentTransactions
+        ?.filter(t => {
+          const transDate = new Date(t.dateOfExpense || '');
+          return transDate.getMonth() === date.getMonth() && 
+                 transDate.getFullYear() === date.getFullYear();
+        })
+        .reduce((sum, t) => sum + t.amount, 0) || 0;
+      
+      monthlyData.push({
+        month: monthName,
+        income: 0, // Can add income tracking later
+        outcome: monthExpenses
+      });
+    }
+    
+    return monthlyData;
+  };
+
+  const monthlyChartData = getMonthlyData();
 
   return (
     <div className="airpay">
@@ -149,41 +192,45 @@ const DashboardPage: React.FC = () => {
           <div className="airpay__stats">
             <div className="airpay__stats-header">
               <h3 className="airpay__stats-title">SPENDING STATISTICS</h3>
-              <select className="airpay__period" value={selectedPeriod} onChange={(e) => setSelectedPeriod(e.target.value)}>
-                <option>1 month</option>
-                <option>3 months</option>
-                <option>6 months</option>
-                <option>1 year</option>
+              <select 
+                className="airpay__period" 
+                value={selectedPeriod} 
+                onChange={(e) => setSelectedPeriod(parseInt(e.target.value))}
+              >
+                <option value={1}>1 month</option>
+                <option value={3}>3 months</option>
+                <option value={6}>6 months</option>
+                <option value={12}>1 year</option>
               </select>
             </div>
 
             <div className="airpay__stats-grid">
               <div className="airpay__stat-item">
                 <div className="airpay__stat-header">
-                  <span className="airpay__stat-icon">💰</span>
-                  <span className="airpay__stat-label">Transactions</span>
+                  <span className="airpay__stat-icon">💸</span>
+                  <span className="airpay__stat-label">Total Expenses</span>
                 </div>
-                <div className="airpay__stat-value">${summary ? summary.totalExpenses.toFixed(0) : '546'}</div>
+                <div className="airpay__stat-value">${filteredExpenses.toFixed(2)}</div>
                 <div className="airpay__stat-bar">
-                  <div className="airpay__stat-progress" style={{ width: `${transactionPercentage}%` }}></div>
+                  <div className="airpay__stat-progress" style={{ width: `${expensesPercentage}%` }}></div>
                 </div>
-                <div className="airpay__stat-percent">{transactionPercentage.toFixed(0)}% of income</div>
+                <div className="airpay__stat-percent">{expensesPercentage.toFixed(0)}% of budget</div>
               </div>
 
               <div className="airpay__stat-item">
                 <div className="airpay__stat-header">
-                  <span className="airpay__stat-icon">🎮</span>
-                  <span className="airpay__stat-label">Entertainment</span>
+                  <span className="airpay__stat-icon">💰</span>
+                  <span className="airpay__stat-label">Total Savings</span>
                 </div>
-                <div className="airpay__stat-value">${entertainmentSpending.toFixed(0)}</div>
+                <div className="airpay__stat-value">${filteredSavings.toFixed(2)}</div>
                 <div className="airpay__stat-bar airpay__stat-bar--yellow">
-                  <div className="airpay__stat-progress" style={{ width: `${entertainmentPercentage}%` }}></div>
+                  <div className="airpay__stat-progress" style={{ width: `${savingsPercentage}%` }}></div>
                 </div>
-                <div className="airpay__stat-percent">{entertainmentPercentage.toFixed(0)}% of income</div>
+                <div className="airpay__stat-percent">{savingsPercentage.toFixed(0)}% of target</div>
               </div>
 
               <div className="airpay__add-stat">
-                <button className="airpay__add-stat-btn">+<br/>Add</button>
+                <Link to="/expenses/add" className="airpay__add-stat-btn">+<br/>Add</Link>
               </div>
             </div>
           </div>
@@ -230,43 +277,6 @@ const DashboardPage: React.FC = () => {
                   <Link to="/expenses/add" className="airpay__transaction-add-link">Add your first expense</Link>
                 </div>
               )}
-              
-              {(!summary || summary.recentTransactions.length === 0) && false && (
-                <>
-                  <div className="airpay__transaction">
-                    <div className="airpay__transaction-icon">💊</div>
-                    <div className="airpay__transaction-info">
-                      <div className="airpay__transaction-name">Pharmacy</div>
-                      <div className="airpay__transaction-date">14 min ago</div>
-                    </div>
-                    <div className="airpay__transaction-amount">-145</div>
-                  </div>
-                  <div className="airpay__transaction">
-                    <div className="airpay__transaction-icon">💸</div>
-                    <div className="airpay__transaction-info">
-                      <div className="airpay__transaction-name">Money transfer</div>
-                      <div className="airpay__transaction-date">Today, 13:27</div>
-                    </div>
-                    <div className="airpay__transaction-amount">-1005</div>
-                  </div>
-                  <div className="airpay__transaction">
-                    <div className="airpay__transaction-icon">🎬</div>
-                    <div className="airpay__transaction-info">
-                      <div className="airpay__transaction-name">Cinema tickets</div>
-                      <div className="airpay__transaction-date">Today, 12:56:2021</div>
-                    </div>
-                    <div className="airpay__transaction-amount">-26,505</div>
-                  </div>
-                  <div className="airpay__transaction">
-                    <div className="airpay__transaction-icon">🍔</div>
-                    <div className="airpay__transaction-info">
-                      <div className="airpay__transaction-name">Food market</div>
-                      <div className="airpay__transaction-date">13.08, 12:56:2021</div>
-                    </div>
-                    <div className="airpay__transaction-amount">-345</div>
-                  </div>
-                </>
-              )}
             </div>
           </div>
 
@@ -283,23 +293,26 @@ const DashboardPage: React.FC = () => {
 
             <div className="airpay__chart-container">
               <div className="airpay__chart-bars">
-                {chartData.map((data, index) => (
-                  <div key={index} className="airpay__chart-column">
-                    <div className="airpay__chart-bar-group">
-                      <div 
-                        className="airpay__chart-bar airpay__chart-bar--income" 
-                        style={{ height: `${(data.income / 3000) * 100}%` }}
-                        data-value={`$${data.income.toFixed(0)}`}
-                      ></div>
-                      <div 
-                        className="airpay__chart-bar airpay__chart-bar--outcome" 
-                        style={{ height: `${(data.outcome / 3000) * 100}%` }}
-                        data-value={`$${data.outcome.toFixed(0)}`}
-                      ></div>
+                {monthlyChartData.map((data, index) => {
+                  const maxValue = Math.max(...monthlyChartData.map(d => d.outcome), 100);
+                  return (
+                    <div key={index} className="airpay__chart-column">
+                      <div className="airpay__chart-bar-group">
+                        <div 
+                          className="airpay__chart-bar airpay__chart-bar--income" 
+                          style={{ height: `${(data.income / maxValue) * 100}%` }}
+                          title={`Income: $${data.income.toFixed(0)}`}
+                        ></div>
+                        <div 
+                          className="airpay__chart-bar airpay__chart-bar--outcome" 
+                          style={{ height: `${(data.outcome / maxValue) * 100}%` }}
+                          title={`Expenses: $${data.outcome.toFixed(0)}`}
+                        ></div>
+                      </div>
+                      <div className="airpay__chart-label">{data.month}</div>
                     </div>
-                    <div className="airpay__chart-label">{data.month}</div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="airpay__chart-legend">
