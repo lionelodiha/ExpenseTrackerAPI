@@ -4,6 +4,7 @@ import type { DashboardSummaryResponse } from "../dtos/dashboards/dashboard-summ
 import { dashboardService } from "../services/dashboard-service";
 import { useAuth } from "../hooks/auth-hook";
 import { Icon, type IconName } from "../components/Icon";
+import { ThemeToggle } from "../components/ThemeToggle";
 import "./DashboardPage.css";
 
 type NavItem =
@@ -187,6 +188,7 @@ const DashboardPage: React.FC = () => {
           </div>
 
           <div className="airpay__header-actions">
+            <ThemeToggle />
             <div className="airpay__date">
               <Icon name="calendar" size={18} />
               <span>{currentDate}</span>
@@ -385,6 +387,9 @@ const DashboardPage: React.FC = () => {
 };
 
 export default DashboardPage;
+
+
+
 
 
 

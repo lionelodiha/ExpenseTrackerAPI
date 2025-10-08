@@ -4,6 +4,7 @@ import { savingGoalService } from "../services/saving-goal-service";
 import type { CreateSavingGoalResponse } from "../dtos/saving-goals/create-saving-goal-response";
 import { useAuth } from "../hooks/auth-hook";
 import { Icon, type IconName } from "../components/Icon";
+import { ThemeToggle } from "../components/ThemeToggle";
 import "./SavingsPage.css";
 
 type NavItem =
@@ -149,6 +150,7 @@ const SavingsPage: React.FC = () => {
           </div>
 
           <div className="airpay__header-actions">
+            <ThemeToggle />
             <div className="airpay__date">
               <Icon name="calendar" size={18} />
               <span>{new Date().toLocaleDateString("en-GB")}</span>
@@ -313,5 +315,7 @@ const SavingsPage: React.FC = () => {
 };
 
 export default SavingsPage;
+
+
 
 

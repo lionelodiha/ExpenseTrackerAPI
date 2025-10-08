@@ -4,6 +4,7 @@ import type { CreateExpenseResponse } from "../dtos/expenses/create-expense-resp
 import { expenseService } from "../services/expense-service";
 import { useAuth } from "../hooks/auth-hook";
 import { Icon, type IconName } from "../components/Icon";
+import { ThemeToggle } from "../components/ThemeToggle";
 import "./ExpensesPage.css";
 
 type NavItem =
@@ -190,6 +191,7 @@ const ExpensesPage: React.FC = () => {
           </div>
 
           <div className="airpay__header-actions">
+            <ThemeToggle />
             <div className="airpay__date">
               <Icon name="calendar" size={18} />
               <span>{new Date().toLocaleDateString("en-GB")}</span>
@@ -388,5 +390,7 @@ const ExpensesPage: React.FC = () => {
 };
 
 export default ExpensesPage;
+
+
 
 

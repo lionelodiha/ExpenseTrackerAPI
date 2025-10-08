@@ -11,40 +11,72 @@
     'Helvetica Neue', sans-serif;
   --font-mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
 
-  --brand-25: #f4fbf7;
-  --brand-50: #e9f5ef;
-  --brand-100: #c5e6d8;
-  --brand-200: #9fd4be;
-  --brand-300: #78c1a3;
-  --brand-400: #56af8c;
-  --brand-500: #2f8a68;
-  --brand-600: #226b4f;
-  --brand-700: #1b5841;
-  --brand-800: #134230;
-  --brand-900: #0c2c20;
-
+  --accent-primary: #2f8a68;
+  --accent-primary-strong: #226b4f;
+  --accent-secondary: #4aa8ff;
   --accent-amber: #f4c430;
-  --accent-salmon: #ff9770;
-  --accent-sky: #8dc6ff;
+  --accent-danger: #ff7b6b;
 
-  --gray-50: #f8f9fc;
-  --gray-75: #f2f5f9;
-  --gray-100: #e6ebf3;
-  --gray-200: #cdd5e0;
-  --gray-300: #b5bfd1;
-  --gray-400: #8f9bb3;
-  --gray-500: #6b768c;
-  --gray-600: #4d5561;
-  --gray-700: #3e444f;
-  --gray-800: #252a32;
-  --gray-900: #12161c;
-
-  --elevate-soft: 0 15px 35px -20px rgba(14, 59, 44, 0.55);
-  --elevate-strong: 0 25px 60px -30px rgba(14, 59, 44, 0.55);
+  --app-background: radial-gradient(160% 120% at 50% 0%, rgba(47, 138, 104, 0.18), transparent 65%),
+    linear-gradient(180deg, #f3f7f4 0%, #ffffff 55%, #eef2f1 100%);
+  --surface-base: rgba(255, 255, 255, 0.95);
+  --surface-muted: rgba(255, 255, 255, 0.75);
+  --surface-elevated: rgba(255, 255, 255, 0.9);
+  --surface-glass: rgba(255, 255, 255, 0.55);
+  --surface-sidebar: linear-gradient(180deg, #134230 0%, #0c2c20 100%);
+  --surface-border: rgba(203, 238, 224, 0.55);
+  --surface-border-strong: rgba(47, 138, 104, 0.25);
+  --surface-border-muted: rgba(47, 138, 104, 0.12);
+  --shadow-soft: 0 25px 55px -35px rgba(18, 74, 55, 0.45);
+  --shadow-strong: 0 35px 60px -40px rgba(18, 74, 55, 0.55);
   --radius-lg: 24px;
   --radius-md: 16px;
   --radius-sm: 12px;
-  --border-translucent: 1px solid rgba(255, 255, 255, 0.4);
+
+  --text-primary: #1f2a2d;
+  --text-secondary: #4d5561;
+  --text-tertiary: #6f7a85;
+  --text-muted: #88939f;
+  --text-inverse: #f6fbf9;
+  --divider-color: rgba(47, 138, 104, 0.16);
+  --input-bg: rgba(255, 255, 255, 0.95);
+  --input-border: rgba(203, 238, 224, 0.75);
+  --input-placeholder: rgba(31, 42, 45, 0.55);
+  --tooltip-bg: rgba(21, 63, 48, 0.9);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --app-background: radial-gradient(140% 120% at 50% 10%, rgba(40, 82, 69, 0.45), transparent 70%),
+    linear-gradient(180deg, #0a1715 0%, #05100e 60%, #030706 100%);
+  --surface-base: rgba(12, 32, 29, 0.92);
+  --surface-muted: rgba(17, 40, 36, 0.78);
+  --surface-elevated: rgba(20, 44, 39, 0.82);
+  --surface-glass: rgba(30, 60, 53, 0.55);
+  --surface-sidebar: linear-gradient(180deg, #031512 0%, #020b0a 100%);
+  --surface-border: rgba(46, 108, 89, 0.38);
+  --surface-border-strong: rgba(64, 158, 128, 0.55);
+  --surface-border-muted: rgba(40, 92, 76, 0.3);
+  --shadow-soft: 0 30px 60px -35px rgba(0, 0, 0, 0.65);
+  --shadow-strong: 0 40px 80px -40px rgba(0, 0, 0, 0.75);
+
+  --text-primary: #e6fff4;
+  --text-secondary: #b7e3d4;
+  --text-tertiary: #8fb9ab;
+  --text-muted: #709d91;
+  --text-inverse: #06100d;
+  --divider-color: rgba(64, 158, 128, 0.25);
+  --input-bg: rgba(8, 24, 21, 0.95);
+  --input-border: rgba(64, 158, 128, 0.55);
+  --input-placeholder: rgba(198, 233, 222, 0.56);
+  --tooltip-bg: rgba(8, 25, 23, 0.95);
+
+  --accent-primary: #58d2a5;
+  --accent-primary-strong: #3bac88;
+  --accent-secondary: #76b3ff;
+  --accent-amber: #ffd166;
+  --accent-danger: #ff8c7c;
 }
 
 html,
@@ -52,33 +84,33 @@ body {
   font-family: var(--font-secondary);
   font-size: clamp(0.95rem, 1.35vw, 1rem);
   font-weight: 400;
-  color: var(--gray-800);
-  background: radial-gradient(160% 120% at 50% 0%, rgba(47, 138, 104, 0.18), transparent 65%),
-    linear-gradient(180deg, var(--gray-50), #ffffff 55%, var(--gray-75));
+  color: var(--text-primary);
+  background: var(--app-background);
   margin: 0;
   padding: 0;
   width: 100%;
   overscroll-behavior: none;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.35s ease, color 0.35s ease;
 }
 
 h1 {
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-family: var(--font-primary);
   letter-spacing: -0.02em;
-  color: var(--gray-900);
+  color: var(--text-primary);
 }
 
 h2 {
   font-size: clamp(1.5rem, 3vw, 2.125rem);
   font-family: var(--font-primary);
   letter-spacing: -0.01em;
-  color: var(--gray-900);
+  color: var(--text-primary);
 }
 
 h3 {
   font-size: clamp(1.25rem, 2.25vw, 1.75rem);
   font-family: var(--font-primary);
+  color: var(--text-primary);
 }
 
 h4,
@@ -86,6 +118,7 @@ h5,
 h6 {
   font-size: clamp(1.05rem, 1.85vw, 1.25rem);
   font-family: var(--font-primary);
+  color: var(--text-primary);
 }
 
 p,
@@ -93,17 +126,18 @@ label {
   font-size: clamp(0.875rem, 0.8vw, 1rem);
   margin-bottom: 1rem;
   font-weight: 400;
-  color: var(--gray-600);
+  color: var(--text-secondary);
 }
 
 small {
   font-size: clamp(0.75rem, 0.75vw, 0.875rem);
-  color: var(--gray-500);
+  color: var(--text-tertiary);
 }
 
 b,
 strong {
-  font-weight: bold;
+  font-weight: 700;
+  color: inherit;
 }
 
 em,
@@ -112,7 +146,7 @@ i {
 }
 
 a {
-  color: var(--brand-500);
+  color: var(--accent-primary);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease-in-out;
@@ -121,7 +155,7 @@ a {
 a:hover,
 a:focus,
 a:active {
-  color: var(--brand-600);
+  color: var(--accent-primary-strong);
 }
 
 code,
@@ -130,10 +164,18 @@ samp,
 pre {
   font-family: var(--font-mono);
   font-size: 1em;
-  color: var(--brand-600);
-  background: rgba(47, 138, 104, 0.08);
+  color: var(--accent-primary);
+  background: rgba(47, 138, 104, 0.12);
   border-radius: 6px;
   padding: 0.15rem 0.35rem;
+}
+
+:root[data-theme="dark"] code,
+:root[data-theme="dark"] kbd,
+:root[data-theme="dark"] samp,
+:root[data-theme="dark"] pre {
+  background: rgba(58, 148, 118, 0.18);
+  color: #8ce5c8;
 }
 
 img {
@@ -150,7 +192,7 @@ input[type="submit"] {
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 button,
@@ -161,13 +203,13 @@ textarea {
   font-family: var(--font-secondary);
   font-size: clamp(0.875rem, 1vw, 1rem);
   line-height: 1.15;
-  color: var(--gray-800);
+  color: var(--text-primary);
   background: none;
   border: none;
   outline: none;
   margin: 0;
   cursor: pointer;
-  transition: color 0.3s, background-color 0.3s, box-shadow 0.3s;
+  transition: color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .ui-icon {

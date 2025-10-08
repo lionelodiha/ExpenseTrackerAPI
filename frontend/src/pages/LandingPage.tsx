@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Icon, type IconName } from "../components/Icon";
+import { ThemeToggle } from "../components/ThemeToggle";
 import "./LandingPage.css";
 
 const HERO_METRICS = [
@@ -53,6 +54,7 @@ const LandingPage: React.FC = () => {
           <div className="lp__cta">
             <Link to="/login" className="btn btn--ghost">Sign in</Link>
             <Link to="/register" className="btn">Create account</Link>
+            <ThemeToggle />
           </div>
         </header>
 
@@ -188,4 +190,6 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+
+
 
