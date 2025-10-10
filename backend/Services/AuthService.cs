@@ -66,7 +66,11 @@ internal class AuthService(ExpenseTrackerDbContext dbContext, IConfiguration con
                 {
                     Id = user.Id,
                     Name = user.Name,
-                    Email = user.Email
+                    Nickname = user.Nickname,
+                    Email = user.Email,
+                    ProfilePicture = user.ProfilePicture,
+                    Phone = user.Phone,
+                    Bio = user.Bio
                 },
                 Auth = new AuthTokenDto
                 {
@@ -101,8 +105,12 @@ internal class AuthService(ExpenseTrackerDbContext dbContext, IConfiguration con
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,
+                Nickname = request.Name, // Default nickname to name
                 Email = request.Email.ToLower(),
                 PasswordHash = HashPassword(request.Password),
+                ProfilePicture = null,
+                Phone = null,
+                Bio = null,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true,
             };
