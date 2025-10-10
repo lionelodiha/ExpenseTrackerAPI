@@ -174,7 +174,11 @@ internal class AuthService(ExpenseTrackerDbContext dbContext, IConfiguration con
             {
                 Id = user.Id,
                 Name = user.Name,
+                Nickname = user.Nickname,
                 Email = user.Email,
+                ProfilePicture = user.ProfilePicture,
+                Phone = user.Phone,
+                Bio = user.Bio,
                 CreatedAt = user.CreatedAt,
                 LastLoginAt = user.LastLoginAt
             };
