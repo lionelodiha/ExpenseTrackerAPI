@@ -5,7 +5,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import LandingPage from "./pages/Landingpage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import DashboardPage from "./pages/DashboardPage";
+import DashboardPage from "./pages/DashboardPageRedesigned";
 import ExpensesPage from "./pages/ExpensesPage";
 import AddExpensePage from "./pages/AddExpensePage";
 import EditExpensePage from "./pages/EditExpensePage";
