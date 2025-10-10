@@ -174,13 +174,27 @@ const DashboardPage: React.FC = () => {
               <span>En</span>
               <span className="airpay__dropdown-icon">▼</span>
             </div>
-            <div className="airpay__user">
-              <img 
-                src="https://i.pravatar.cc/150?img=12" 
-                alt={user?.name || "User"} 
-                className="airpay__user-avatar"
-              />
-              <span className="airpay__user-name">{user?.name || "User"}</span>
+            <div className="airpay__user" style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/profile'}>
+              {user?.profilePicture ? (
+                <img 
+                  src={user.profilePicture} 
+                  alt={user?.nickname || user?.name || "User"} 
+                  className="airpay__user-avatar"
+                />
+              ) : (
+                <div className="airpay__user-avatar" style={{ 
+                  background: 'linear-gradient(135deg, #2d5f4d 0%, #4a7266 100%)', 
+                  color: 'white', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  fontWeight: '700',
+                  fontSize: '1.2rem'
+                }}>
+                  {((user?.nickname || user?.name || "U").split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2))}
+                </div>
+              )}
+              <span className="airpay__user-name">{user?.nickname || user?.name || "User"}</span>
               <span className="airpay__dropdown-icon">▼</span>
             </div>
           </div>

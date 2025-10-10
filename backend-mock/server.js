@@ -70,8 +70,12 @@ app.post('/api/v1/auth/register', async (req, res) => {
     const user = {
       id: Date.now().toString(),
       name,
+      nickname: name, // Default nickname to name
       email,
       password: hashedPassword,
+      profilePicture: '', // Empty by default
+      phone: '',
+      bio: '',
       createdAt: new Date().toISOString()
     };
 
@@ -111,7 +115,11 @@ app.post('/api/v1/auth/login', async (req, res) => {
       user: {
         id: user.id,
         name: user.name,
-        email: user.email
+        nickname: user.nickname || user.name,
+        email: user.email,
+        profilePicture: user.profilePicture || '',
+        phone: user.phone || '',
+        bio: user.bio || ''
       },
       auth: {
         token,
@@ -462,6 +470,44 @@ app.get('/scalar/v1', (req, res) => {
       </body>
     </html>
   `);
+});
+
+// ============ USER PROFILE ROUTES ============
+
+// Update user profile
+app.put('/api/v1/user/profile', authenticateToken, (req, res) => {
+  const { name, nickname, profilePicture, phone, bio } = req.body;
+  
+  // Find user
+  const user = users.find(u => u.id === req.user.userId);
+  
+  if (!user) {
+    return res.status(404).json(apiResponse(false, null, 'User not found.'));
+  }
+  
+  // Update user fields
+  if (name) user.name = name;
+  if (nickname) user.nickname = nickname;
+  if (profilePicture !== undefined) user.profilePicture = profilePicture;
+  if (phone !== undefined) user.phone = phone;
+  if (bio !== undefined) user.bio = bio;
+  
+  // Return updated user (without password)
+  const { password, ...userWithoutPassword } = user;
+  
+  res.json(apiResponse(true, userWithoutPassword, 'Profile updated successfully.'));
+});
+
+// Get user profile
+app.get('/api/v1/user/profile', authenticateToken, (req, res) => {
+  const user = users.find(u => u.id === req.user.userId);
+  
+  if (!user) {
+    return res.status(404).json(apiResponse(false, null, 'User not found.'));
+  }
+  
+  const { password, ...userWithoutPassword } = user;
+  res.json(apiResponse(true, userWithoutPassword, 'Profile retrieved successfully.'));
 });
 
 // Start server

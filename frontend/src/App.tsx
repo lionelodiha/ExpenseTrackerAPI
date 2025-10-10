@@ -12,6 +12,7 @@ import EditExpensePage from "./pages/EditExpensePage";
 import SavingsPage from "./pages/SavingsPage";
 import AddSavingGoalPage from "./pages/AddSavingGoalPage";
 import EditSavingGoalPage from "./pages/EditSavingGoalPage";
+import ProfilePage from "./pages/ProfilePage";
 import "./App.css";
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
             <Route path="/savings" element={<PrivateRoute><SavingsPage /></PrivateRoute>} />
             <Route path="/savings/add" element={<PrivateRoute><AddSavingGoalPage /></PrivateRoute>} />
             <Route path="/savings/edit/:id" element={<PrivateRoute><EditSavingGoalPage /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
             
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
