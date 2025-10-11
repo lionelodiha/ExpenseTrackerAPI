@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.Data;
 using ExpenseTracker.DTOs.Users;
-using ExpenseTracker.Extensions;
-using ExpenseTracker.Utils;
-using System.Security.Claims;
+using ExpenseTracker.Utilities.Extension;
+using ExpenseTracker.Models;
 
 namespace ExpenseTracker.Controllers;
 
@@ -37,7 +36,11 @@ public class UserController : ControllerBase
     {
         try
         {
-            var userId = User.GetUserId();
+            if (!User.TryGetUserId(out Guid userId))
+            {
+                return Unauthorized(ApiResponse<object>.Fail(null, "Invalid user token."));
+            }
+
             _logger.LogInformation("Getting profile for user {UserId}", userId);
 
             var user = await _context.Users
@@ -46,7 +49,7 @@ public class UserController : ControllerBase
 
             if (user == null)
             {
-                return NotFound(ApiResponse<object>.Failure("User not found."));
+                return NotFound(ApiResponse<object>.Fail(null, "User not found."));
             }
 
             var response = new UserProfileResponse
@@ -61,12 +64,12 @@ public class UserController : ControllerBase
                 CreatedAt = user.CreatedAt
             };
 
-            return Ok(ApiResponse<UserProfileResponse>.Success(response, "Profile retrieved successfully."));
+            return Ok(ApiResponse<UserProfileResponse>.Ok(response, "Profile retrieved successfully."));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting profile");
-            return StatusCode(500, ApiResponse<object>.Failure("An error occurred while retrieving the profile."));
+            return StatusCode(500, ApiResponse<object>.Fail(null, "An error occurred while retrieving the profile."));
         }
     }
 
@@ -83,14 +86,18 @@ public class UserController : ControllerBase
     {
         try
         {
-            var userId = User.GetUserId();
+            if (!User.TryGetUserId(out Guid userId))
+            {
+                return Unauthorized(ApiResponse<object>.Fail(null, "Invalid user token."));
+            }
+
             _logger.LogInformation("Updating profile for user {UserId}", userId);
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
             {
-                return NotFound(ApiResponse<object>.Failure("User not found."));
+                return NotFound(ApiResponse<object>.Fail(null, "User not found."));
             }
 
             // Update user fields
@@ -115,12 +122,12 @@ public class UserController : ControllerBase
             };
 
             _logger.LogInformation("Profile updated successfully for user {UserId}", userId);
-            return Ok(ApiResponse<UserProfileResponse>.Success(response, "Profile updated successfully."));
+            return Ok(ApiResponse<UserProfileResponse>.Ok(response, "Profile updated successfully."));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error updating profile");
-            return StatusCode(500, ApiResponse<object>.Failure("An error occurred while updating the profile."));
+            return StatusCode(500, ApiResponse<object>.Fail(null, "An error occurred while updating the profile."));
         }
     }
 }
