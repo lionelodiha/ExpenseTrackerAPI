@@ -13,7 +13,7 @@ public class UserProfileResponse
     /// <summary>
     /// User's full name.
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// User's nickname or preferred display name.
@@ -23,7 +23,7 @@ public class UserProfileResponse
     /// <summary>
     /// User's email address.
     /// </summary>
-    public required string Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// Base64 encoded profile picture.
