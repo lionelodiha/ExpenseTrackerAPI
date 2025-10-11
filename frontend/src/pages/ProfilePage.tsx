@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/auth-hook";
+import { userService, type UserProfileData } from "../services/user-service";
 import "./ProfilePage.css";
 
 interface ProfileData {
@@ -88,38 +89,28 @@ const ProfilePage = () => {
     setSuccess("");
 
     try {
-      // Get token from localStorage
-      const token = localStorage.getItem("token");
-      
-      if (!token) {
-        setError("Please login again");
-        navigate("/login");
-        return;
-      }
-
-      // Call API to update profile
-      const response = await fetch("http://localhost:5068/api/v1/user/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
+      // Call API to update profile using the user service
+      const response = await userService.updateProfile({
+        name: formData.name,
+        nickname: formData.nickname,
+        profilePicture: formData.profilePicture,
+        phone: formData.phone,
+        bio: formData.bio
       });
 
-      const data = await response.json();
+      console.log("Profile update response:", response);
 
-      if (response.ok && data.success) {
+      if (response.success && response.data) {
         setSuccess("Profile updated successfully!");
         
         // Update user in localStorage
         const updatedUser = {
           ...user,
-          name: formData.name,
-          nickname: formData.nickname,
-          profilePicture: formData.profilePicture,
-          phone: formData.phone,
-          bio: formData.bio
+          name: response.data.name,
+          nickname: response.data.nickname,
+          profilePicture: response.data.profilePicture,
+          phone: response.data.phone,
+          bio: response.data.bio
         };
         localStorage.setItem("user", JSON.stringify(updatedUser));
         
@@ -128,11 +119,11 @@ const ProfilePage = () => {
           window.location.reload();
         }, 1500);
       } else {
-        setError(data.message || "Failed to update profile");
+        setError(response.message || "Failed to update profile");
       }
     } catch (err: any) {
       console.error("Profile update error:", err);
-      setError("Failed to update profile. Please try again.");
+      setError(err.message || "Failed to update profile. Please try again.");
     } finally {
       setLoading(false);
     }

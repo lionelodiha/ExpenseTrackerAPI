@@ -83,6 +83,15 @@ const makeMetadataRoutes = (base = apiBase("metadata")) => ({
 	},
 });
 
+const makeUserRoutes = (base = apiBase("user")) => ({
+	get: {
+		profile: `${base}/profile`,
+	},
+	put: {
+		profile: `${base}/profile`,
+	},
+});
+
 export const ExpenseTrackerApiRoutes = {
 	auth: makeAuthRoutes(),
 	expense: makeExpenseRoutes(),
@@ -90,4 +99,5 @@ export const ExpenseTrackerApiRoutes = {
 	savings: makeSavingsRoutes(),
 	dashboard: makeDashboardRoutes(),
 	metadata: makeMetadataRoutes(),
+	user: makeUserRoutes(),
 } as const;
