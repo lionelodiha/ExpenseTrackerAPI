@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { PopupProvider } from "./context/PopupProvider";
 import PrivateRoute from "./components/PrivateRoute";
-import LandingPage from "./pages/Landingpage";
+import PageTransition from "./components/PageTransition";
+import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ModernDashboardPage from "./pages/ModernDashboardPage";
@@ -20,22 +21,24 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <PopupProvider>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            
-            <Route path="/dashboard" element={<PrivateRoute><ModernDashboardPage /></PrivateRoute>} />
-            <Route path="/expenses" element={<PrivateRoute><ModernExpensesPage /></PrivateRoute>} />
-            <Route path="/expenses/add" element={<PrivateRoute><AddExpensePage /></PrivateRoute>} />
-            <Route path="/expenses/edit/:id" element={<PrivateRoute><EditExpensePage /></PrivateRoute>} />
-            <Route path="/savings" element={<PrivateRoute><ModernSavingsPage /></PrivateRoute>} />
-            <Route path="/savings/add" element={<PrivateRoute><AddSavingGoalPage /></PrivateRoute>} />
-            <Route path="/savings/edit/:id" element={<PrivateRoute><EditSavingGoalPage /></PrivateRoute>} />
-            <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
-            
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          <PageTransition>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+
+              <Route path="/dashboard" element={<PrivateRoute><ModernDashboardPage /></PrivateRoute>} />
+              <Route path="/expenses" element={<PrivateRoute><ModernExpensesPage /></PrivateRoute>} />
+              <Route path="/expenses/add" element={<PrivateRoute><AddExpensePage /></PrivateRoute>} />
+              <Route path="/expenses/edit/:id" element={<PrivateRoute><EditExpensePage /></PrivateRoute>} />
+              <Route path="/savings" element={<PrivateRoute><ModernSavingsPage /></PrivateRoute>} />
+              <Route path="/savings/add" element={<PrivateRoute><AddSavingGoalPage /></PrivateRoute>} />
+              <Route path="/savings/edit/:id" element={<PrivateRoute><EditSavingGoalPage /></PrivateRoute>} />
+              <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </PageTransition>
         </PopupProvider>
       </AuthProvider>
     </BrowserRouter>

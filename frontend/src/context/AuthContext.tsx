@@ -61,6 +61,8 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     authService.logoutClient();
     localStorage.removeItem("user");
     setUser(null);
+    // Force a clean navigation to landing page
+    window.location.href = "/";
   };
 
   const register = async (name: string, email: string, password: string) => {

@@ -38,10 +38,10 @@
 
 /* Profile Picture Card */
 .profile-picture-card {
-  background: linear-gradient(135deg, rgba(107, 155, 124, 0.9) 0%, rgba(93, 138, 122, 0.9) 50%, rgba(123, 168, 157, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.9) 0%, rgba(13, 148, 136, 0.9) 50%, rgba(128, 212, 217, 0.9) 100%);
   border-radius: 1.5rem;
   padding: 2rem;
-  box-shadow: 0 22px 52px rgba(18, 42, 33, 0.34);
+  box-shadow: 0 22px 52px rgba(13, 72, 68, 0.34);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -81,17 +81,17 @@
   overflow: hidden;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 4px solid #2d5f4d;
+  border: 4px solid #0d9488;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(45, 95, 77, 0.25);
+  box-shadow: 0 8px 24px rgba(13, 148, 136, 0.25);
 }
 
 .profile-picture-container:hover {
   transform: scale(1.08) rotate(2deg);
-  box-shadow: 0 12px 36px rgba(45, 95, 77, 0.4), 0 4px 12px rgba(45, 95, 77, 0.2);
-  border-color: #4a7266;
+  box-shadow: 0 12px 36px rgba(13, 148, 136, 0.4), 0 4px 12px rgba(13, 148, 136, 0.2);
+  border-color: #14b8a6;
 }
 
 .profile-picture-container:active {
@@ -128,7 +128,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(45, 95, 77, 0.9);
+  background: rgba(13, 148, 136, 0.9);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -157,10 +157,10 @@
 
 /* Profile Form Card */
 .profile-form-card {
-  background: linear-gradient(135deg, rgba(107, 155, 124, 0.86) 0%, rgba(93, 138, 122, 0.86) 50%, rgba(123, 168, 157, 0.86) 100%);
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.86) 0%, rgba(13, 148, 136, 0.86) 50%, rgba(128, 212, 217, 0.86) 100%);
   border-radius: 1.5rem;
   padding: 2.5rem;
-  box-shadow: 0 26px 60px rgba(18, 42, 33, 0.36);
+  box-shadow: 0 26px 60px rgba(13, 72, 68, 0.36);
   backdrop-filter: blur(22px);
   border: 1px solid rgba(255, 255, 255, 0.24);
   color: rgba(255, 255, 255, 0.95);
@@ -336,19 +336,19 @@
 }
 
 .profile-button--primary {
-  background: linear-gradient(135deg, #2d5f4d 0%, #4a7266 100%);
+  background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
   color: white;
-  box-shadow: 0 4px 12px rgba(45, 95, 77, 0.3), 0 2px 6px rgba(45, 95, 77, 0.2);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3), 0 2px 6px rgba(13, 148, 136, 0.2);
 }
 
 .profile-button--primary:hover:not(:disabled) {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(45, 95, 77, 0.45), 0 4px 10px rgba(45, 95, 77, 0.25);
+  box-shadow: 0 8px 20px rgba(13, 148, 136, 0.45), 0 4px 10px rgba(13, 148, 136, 0.25);
 }
 
 .profile-button--primary:active:not(:disabled) {
   transform: translateY(-1px) scale(0.98);
-  box-shadow: 0 4px 12px rgba(45, 95, 77, 0.35);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
 }
 
 .profile-button:disabled {
@@ -374,11 +374,11 @@
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .profile-page {
-    background: linear-gradient(135deg, #0f1f19 0%, #1a2f26 100%);
+    background: linear-gradient(135deg, #0a3d3a 0%, #134e4a 100%);
   }
 
   .profile-title {
-    color: #7ba89d;
+    color: #80d4d9;
   }
 
   .profile-subtitle {
@@ -387,12 +387,12 @@
 
   .profile-picture-card,
   .profile-form-card {
-    background: #1a2f26;
+    background: #134e4a;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   }
 
   .profile-section-title {
-    color: #7ba89d;
+    color: #80d4d9;
   }
 
   .profile-label {
@@ -401,20 +401,20 @@
 
   .profile-input,
   .profile-textarea {
-    background: #0f1f19;
+    background: #0a3d3a;
     border-color: rgba(255, 255, 255, 0.85);
     color: #e5e7eb;
   }
 
   .profile-input:focus,
   .profile-textarea:focus {
-    border-color: #7ba89d;
-    box-shadow: 0 0 0 3px rgba(123, 168, 157, 0.2);
-    background: #1a2f26;
+    border-color: #80d4d9;
+    box-shadow: 0 0 0 3px rgba(128, 212, 217, 0.2);
+    background: #134e4a;
   }
 
   .profile-input:disabled {
-    background: #0f1f19;
+    background: #0a3d3a;
     color: rgba(255, 255, 255, 0.75);
   }
 
@@ -429,12 +429,12 @@
   }
 
   .profile-button--secondary {
-    background: #0f1f19;
+    background: #0a3d3a;
     color: #e5e7eb;
   }
 
   .profile-button--secondary:hover {
-    background: #2d5f4d;
+    background: #0d9488;
   }
 
   .profile-form-actions {

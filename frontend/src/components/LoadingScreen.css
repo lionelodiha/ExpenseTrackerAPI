@@ -1,0 +1,140 @@
+/* Loading Screen - Teal Theme - Clean & Elegant */
+
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #5eced3 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.loading-screen__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* VG Logo - Clean Animation */
+.loading-logo {
+  display: flex;
+  gap: 1rem;
+}
+
+.loading-logo__letter {
+  font-size: 7rem;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: fadeSlideIn 2.5s ease-in-out infinite;
+}
+
+.loading-logo__letter--v {
+  animation-delay: 0s;
+}
+
+.loading-logo__letter--g {
+  animation-delay: 0.3s;
+}
+
+/* Fade and Slide Animation */
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+}
+
+/* Background Animation */
+.loading-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.loading-bg__circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  animation: floatCircle 20s infinite ease-in-out;
+}
+
+.loading-bg__circle--1 {
+  width: 400px;
+  height: 400px;
+  top: -150px;
+  left: -100px;
+  animation-delay: 0s;
+}
+
+.loading-bg__circle--2 {
+  width: 300px;
+  height: 300px;
+  bottom: -100px;
+  right: -80px;
+  animation-delay: 7s;
+}
+
+.loading-bg__circle--3 {
+  width: 250px;
+  height: 250px;
+  top: 50%;
+  right: -60px;
+  animation-delay: 14s;
+}
+
+@keyframes floatCircle {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(50px, -50px) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .loading-logo__letter {
+    font-size: 5rem;
+  }
+
+  .loading-bg__circle--1 {
+    width: 300px;
+    height: 300px;
+  }
+
+  .loading-bg__circle--2 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .loading-bg__circle--3 {
+    width: 150px;
+    height: 150px;
+  }
+}
