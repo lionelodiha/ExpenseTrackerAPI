@@ -14,7 +14,7 @@ interface ProfileData {
 }
 
 const ProfilePage = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -350,13 +350,6 @@ const ProfilePage = () => {
             </form>
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-export default ProfilePage;
-div>
       </div>
     </div>
   );
