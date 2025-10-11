@@ -8,6 +8,7 @@ import "./DashboardPageNew.css";
 const DashboardPageRedesigned: React.FC = () => {
   const [summary, setSummary] = useState<DashboardSummaryResponse | null>(null);
   const [error, setError] = useState("");
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -62,6 +63,11 @@ const DashboardPageRedesigned: React.FC = () => {
     return icons[category] || '💰';
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <div className="dashboard">
       {/* Sidebar */}
@@ -93,106 +99,139 @@ const DashboardPageRedesigned: React.FC = () => {
             <span className="dashboard__nav-icon">📈</span>
             <span>Budgets</span>
           </Link>
-          <Link to="/profile" className="dashboard__nav-item">
-            <span className="dashboard__nav-icon">👤</span>
-            <span>Profile</span>
-          </Link>
         </nav>
-
-        <div className="dashboard__user-card">
-          <div className="dashboard__user-info" onClick={() => navigate('/profile')}>
-            {user?.profilePicture ? (
-              <img 
-                src={user.profilePicture} 
-                alt={user?.nickname || user?.name || "User"} 
-                className="dashboard__user-avatar"
-              />
-            ) : (
-              <div className="dashboard__user-avatar" style={{ 
-                background: 'linear-gradient(135deg, #2d5f4d 0%, #4a7266 100%)', 
-                color: 'white', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                fontWeight: '700',
-                fontSize: '1rem'
-              }}>
-                {getInitials(user?.nickname || user?.name)}
-              </div>
-            )}
-            <div className="dashboard__user-details">
-              <p className="dashboard__user-name">{user?.nickname || user?.name || "User"}</p>
-              <p className="dashboard__user-email">{user?.email}</p>
-            </div>
-          </div>
-          <button onClick={logout} className="dashboard__logout">Logout</button>
-        </div>
       </aside>
 
       {/* Main Content */}
       <main className="dashboard__main">
-        {/* Header */}
+        {/* Header with User Menu */}
         <header className="dashboard__header">
           <div className="dashboard__welcome">
-            <h1 className="dashboard__welcome-title">Welcome back, {user?.nickname || user?.name}!</h1>
-            <p className="dashboard__welcome-subtitle">Here's your financial overview</p>
+            <h1 className="dashboard__welcome-title">Welcome back, {user?.nickname || user?.name || "User"}!</h1>
+            <p className="dashboard__welcome-subtitle">Here's your financial overview • {currentDate}</p>
           </div>
-          <div className="dashboard__header-actions">
-            <div className="dashboard__date">{currentDate}</div>
+          
+          {/* User Dropdown */}
+          <div 
+            className="dashboard__user-menu"
+            onMouseEnter={() => setShowUserMenu(true)}
+            onMouseLeave={() => setShowUserMenu(false)}
+          >
+            <div className="dashboard__user-trigger">
+              {user?.profilePicture ? (
+                <img 
+                  src={user.profilePicture} 
+                  alt={user?.nickname || user?.name || "User"} 
+                  className="dashboard__user-avatar"
+                />
+              ) : (
+                <div className="dashboard__user-avatar dashboard__user-avatar--placeholder">
+                  {getInitials(user?.nickname || user?.name)}
+                </div>
+              )}
+              <svg className="dashboard__user-caret" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+
+            {showUserMenu && (
+              <div className="dashboard__user-dropdown">
+                <div className="dashboard__user-dropdown-header">
+                  <div className="dashboard__user-dropdown-avatar">
+                    {user?.profilePicture ? (
+                      <img src={user.profilePicture} alt={user?.nickname || user?.name || "User"} />
+                    ) : (
+                      <div className="dashboard__user-avatar--placeholder">
+                        {getInitials(user?.nickname || user?.name)}
+                      </div>
+                    )}
+                  </div>
+                  <div className="dashboard__user-dropdown-info">
+                    <p className="dashboard__user-dropdown-name">{user?.nickname || user?.name || "User"}</p>
+                    <p className="dashboard__user-dropdown-email">{user?.email || ""}</p>
+                  </div>
+                </div>
+                <div className="dashboard__user-dropdown-divider"></div>
+                <button 
+                  className="dashboard__user-dropdown-item"
+                  onClick={() => navigate("/profile")}
+                >
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10ZM10 12.5C6.66667 12.5 0 14.175 0 17.5V20H20V17.5C20 14.175 13.3333 12.5 10 12.5Z" fill="currentColor"/>
+                  </svg>
+                  <span>My Profile</span>
+                </button>
+                <button 
+                  className="dashboard__user-dropdown-item dashboard__user-dropdown-item--danger"
+                  onClick={handleLogout}
+                >
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 19H3C2.46957 19 1.96086 18.7893 1.58579 18.4142C1.21071 18.0391 1 17.5304 1 17V3C1 2.46957 1.21071 1.96086 1.58579 1.58579C1.96086 1.21071 2.46957 1 3 1H7M14 15L19 10M19 10L14 5M19 10H7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>Logout</span>
+                </button>
+              </div>
+            )}
           </div>
         </header>
 
-        {error && <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
+        {error && <div className="dashboard__error">{error}</div>}
 
         {/* Stats Cards */}
-        <div className="dashboard__content">
+        <div className="dashboard__stats">
           {/* Balance Card */}
-          <div className="dashboard__card">
-            <div className="dashboard__card-header">
-              <h3 className="dashboard__card-title">Current Balance</h3>
-              <div className="dashboard__card-icon">💵</div>
+          <div className="dashboard__stat-card dashboard__stat-card--primary">
+            <div className="dashboard__stat-icon">💵</div>
+            <div className="dashboard__stat-content">
+              <p className="dashboard__stat-label">Current Balance</p>
+              <h3 className="dashboard__stat-value">
+                ${summary?.balance?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '10,000.00'}
+              </h3>
+              <p className="dashboard__stat-change">
+                From ${summary?.startingBalance?.toLocaleString() || '10,000'} starting
+              </p>
             </div>
-            <p className="dashboard__card-value">
-              ${summary?.balance?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '10,000.00'}
-            </p>
-            <p className="dashboard__card-change">
-              From ${summary?.startingBalance?.toLocaleString() || '10,000'} starting
-            </p>
           </div>
 
           {/* Total Expenses */}
-          <div className="dashboard__card">
-            <div className="dashboard__card-header">
-              <h3 className="dashboard__card-title">Total Expenses</h3>
-              <div className="dashboard__card-icon">💸</div>
+          <div className="dashboard__stat-card dashboard__stat-card--danger">
+            <div className="dashboard__stat-icon">💸</div>
+            <div className="dashboard__stat-content">
+              <p className="dashboard__stat-label">Total Expenses</p>
+              <h3 className="dashboard__stat-value">
+                ${summary?.totalExpenses?.toFixed(2) || '0.00'}
+              </h3>
+              <p className="dashboard__stat-change">
+                This month
+              </p>
             </div>
-            <p className="dashboard__card-value">
-              ${summary?.totalExpenses?.toFixed(2) || '0.00'}
-            </p>
-            <p className="dashboard__card-change dashboard__card-change--negative">
-              This month
-            </p>
           </div>
 
           {/* Total Savings */}
-          <div className="dashboard__card">
-            <div className="dashboard__card-header">
-              <h3 className="dashboard__card-title">Total Savings</h3>
-              <div className="dashboard__card-icon">💰</div>
+          <div className="dashboard__stat-card dashboard__stat-card--success">
+            <div className="dashboard__stat-icon">💰</div>
+            <div className="dashboard__stat-content">
+              <p className="dashboard__stat-label">Total Savings</p>
+              <h3 className="dashboard__stat-value">
+                ${summary?.totalSavings?.toFixed(2) || '0.00'}
+              </h3>
+              <p className="dashboard__stat-change">
+                Saved so far
+              </p>
             </div>
-            <p className="dashboard__card-value">
-              ${summary?.totalSavings?.toFixed(2) || '0.00'}
-            </p>
-            <p className="dashboard__card-change">
-              Saved so far
-            </p>
           </div>
+        </div>
 
+        {/* Content Grid */}
+        <div className="dashboard__content">
           {/* Recent Transactions */}
-          <div className="dashboard__card dashboard__card--wide">
+          <div className="dashboard__card dashboard__card--transactions">
             <div className="dashboard__card-header">
-              <h3 className="dashboard__card-title">Recent Transactions</h3>
-              <Link to="/expenses" style={{ color: '#2d5f4d', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '600' }}>
+              <h3 className="dashboard__card-title">
+                <span className="dashboard__card-title-icon">📝</span>
+                Recent Transactions
+              </h3>
+              <Link to="/expenses" className="dashboard__card-link">
                 View All →
               </Link>
             </div>
@@ -227,38 +266,40 @@ const DashboardPageRedesigned: React.FC = () => {
           </div>
 
           {/* Category Breakdown */}
-          <div className="dashboard__card">
+          <div className="dashboard__card dashboard__card--categories">
             <div className="dashboard__card-header">
-              <h3 className="dashboard__card-title">Top Categories</h3>
-              <div className="dashboard__card-icon">📂</div>
+              <h3 className="dashboard__card-title">
+                <span className="dashboard__card-title-icon">📂</span>
+                Top Categories
+              </h3>
             </div>
             {summary && summary.categoryBreakdown && summary.categoryBreakdown.length > 0 ? (
-              <div style={{ marginTop: '1rem' }}>
+              <div className="dashboard__categories">
                 {summary.categoryBreakdown.slice(0, 5).map((cat, index) => (
-                  <div key={index} style={{ marginBottom: '1rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                      <span style={{ fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+                  <div key={index} className="dashboard__category">
+                    <div className="dashboard__category-header">
+                      <span className="dashboard__category-name">
                         {getCategoryIcon(cat.category)} {cat.category}
                       </span>
-                      <span style={{ fontSize: '0.9rem', fontWeight: '700', color: '#2d5f4d' }}>
+                      <span className="dashboard__category-amount">
                         ${cat.totalSpent.toFixed(2)}
                       </span>
                     </div>
-                    <div style={{ background: '#f0f9f4', borderRadius: '999px', height: '8px', overflow: 'hidden' }}>
-                      <div style={{
-                        background: 'linear-gradient(to right, #2d5f4d, #4a7266)',
-                        width: `${Math.min((cat.totalSpent / (summary.totalExpenses || 1)) * 100, 100)}%`,
-                        height: '100%',
-                        borderRadius: '999px',
-                        transition: 'width 0.3s'
-                      }}></div>
+                    <div className="dashboard__category-bar">
+                      <div 
+                        className="dashboard__category-bar-fill"
+                        style={{
+                          width: `${Math.min((cat.totalSpent / (summary.totalExpenses || 1)) * 100, 100)}%`
+                        }}
+                      ></div>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div style={{ textAlign: 'center', padding: '2rem 1rem', color: '#666' }}>
-                <p>No categories yet</p>
+              <div className="dashboard__empty">
+                <div className="dashboard__empty-icon">📂</div>
+                <p className="dashboard__empty-text">No categories yet</p>
               </div>
             )}
           </div>
