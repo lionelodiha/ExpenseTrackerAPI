@@ -103,20 +103,18 @@ const ProfilePage = () => {
       if (response.success && response.data) {
         setSuccess("Profile updated successfully!");
         
-        // Update user in localStorage
-        const updatedUser = {
-          ...user,
+        // Update user in AuthContext (will also update localStorage)
+        updateUser({
           name: response.data.name,
           nickname: response.data.nickname,
           profilePicture: response.data.profilePicture,
           phone: response.data.phone,
           bio: response.data.bio
-        };
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        });
         
-        // Refresh page to show updated data
+        // Navigate back to dashboard after short delay
         setTimeout(() => {
-          window.location.reload();
+          navigate("/dashboard");
         }, 1500);
       } else {
         setError(response.message || "Failed to update profile");
@@ -352,6 +350,13 @@ const ProfilePage = () => {
             </form>
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProfilePage;
+div>
       </div>
     </div>
   );
