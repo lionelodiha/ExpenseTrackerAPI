@@ -1,0 +1,124 @@
+.dashboard-form-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dashboard-form-card {
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 1.75rem;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(45, 95, 77, 0.15);
+  border: 1px solid rgba(45, 95, 77, 0.1);
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.dashboard-form-card__header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-form-card__title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f3b2d;
+}
+
+.dashboard-form-card__subtitle {
+  margin: 0.5rem 0 0 0;
+  color: #667085;
+}
+
+.dashboard-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.dashboard-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.dashboard-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dashboard-form__label {
+  font-weight: 600;
+  color: #1f3b2d;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-input,
+.dashboard-select,
+.dashboard-textarea {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid rgba(45, 95, 77, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  color: #1f2933;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+}
+
+.dashboard-input:hover,
+.dashboard-select:hover,
+.dashboard-textarea:hover {
+  border-color: rgba(45, 95, 77, 0.35);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 8px rgba(45, 95, 77, 0.08);
+}
+
+.dashboard-input:focus,
+.dashboard-select:focus,
+.dashboard-textarea:focus {
+  outline: none;
+  border-color: rgba(45, 95, 77, 0.6);
+  box-shadow: 0 0 0 4px rgba(45, 95, 77, 0.15), 0 4px 12px rgba(45, 95, 77, 0.12);
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+}
+
+.dashboard-textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.dashboard-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-form__help {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+@media (max-width: 640px) {
+  .dashboard-form-card {
+    padding: 1.75rem;
+  }
+
+  .dashboard-form__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-form__actions .dashboard-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

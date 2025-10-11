@@ -1,25 +1,40 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import ModernDashboardLayout from "../components/layout/ModernDashboardLayout";
+import "../styles/dashboard-forms.css";
 import { savingGoalService } from "../services/saving-goal-service";
-import { useAuth } from "../hooks/auth-hook";
-import "./AddSavingGoalPage.css";
 
-const AddSavingGoalPage = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [targetAmount, setTargetAmount] = useState('');
-  const [deadline, setDeadline] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+const AddSavingGoalPage: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [targetAmount, setTargetAmount] = useState("");
+  const [deadline, setDeadline] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    if (!targetAmount || parseFloat(targetAmount) <= 0) {
-      setError('Please enter a valid target amount');
+  const headerActions = useMemo(
+    () => (
+      <Link to="/savings" className="dashboard-button dashboard-button--secondary">
+        Back to Savings
+      </Link>
+    ),
+    [],
+  );
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+
+    const parsedAmount = parseFloat(targetAmount);
+    if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+      setError("Please enter a valid target amount greater than zero.");
+      return;
+    }
+
+    if (!title.trim()) {
+      setError("Please provide a name for this goal.");
       return;
     }
 
@@ -29,169 +44,119 @@ const AddSavingGoalPage = () => {
       await savingGoalService.create({
         title,
         description,
-        targetAmount: parseFloat(targetAmount),
+        targetAmount: parsedAmount,
         deadline: deadline || undefined,
       });
-      navigate('/savings');
-    } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to create savings goal');
+
+      navigate("/savings");
+    } catch (err) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "Failed to create savings goal.";
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="airpay">
-      <aside className="airpay__sidebar">
-        <div className="airpay__brand">
-          <div className="airpay__logo">📱</div>
-          <h1 className="airpay__title">Air Pay</h1>
-        </div>
+    <ModernDashboardLayout
+      activeNav="savings"
+      headerTitle="Create Savings Goal"
+      headerSubtitle="Set a new target and stay focused on what matters"
+      headerActions={headerActions}
+    >
+      <section className="dashboard-form-page">
+        {error ? <div className="dashboard__error">{error}</div> : null}
 
-        <nav className="airpay__nav">
-          <Link to="/dashboard" className="airpay__nav-item">
-            <span className="airpay__nav-icon">📊</span>
-            <span>Dashboard</span>
-          </Link>
-          <Link to="/expenses" className="airpay__nav-item">
-            <span className="airpay__nav-icon">💸</span>
-            <span>Expenses</span>
-          </Link>
-          <Link to="/savings" className="airpay__nav-item airpay__nav-item--active">
-            <span className="airpay__nav-icon">💰</span>
-            <span>Savings</span>
-          </Link>
-          <Link to="/budgets" className="airpay__nav-item">
-            <span className="airpay__nav-icon">📈</span>
-            <span>Budgets</span>
-          </Link>
-          <a href="#settings" className="airpay__nav-item">
-            <span className="airpay__nav-icon">⚙️</span>
-            <span>Settings</span>
-          </a>
-        </nav>
-
-        <div className="airpay__premium">
-          <div className="airpay__premium-badge">⭐</div>
-          <h3 className="airpay__premium-title">Get Premium</h3>
-          <p className="airpay__premium-text">Unlimited functions and encrypted recovery</p>
-          <button className="airpay__premium-btn">
-            <span>Upgrade</span>
-            <span className="airpay__premium-icon">🔒</span>
-          </button>
-        </div>
-
-        <button onClick={logout} className="airpay__logout">Logout</button>
-      </aside>
-
-      <main className="airpay__main">
-        <header className="airpay__header">
-          <div className="airpay__search">
-            <Link to="/savings" className="back-button">
-              ← Back to Savings
-            </Link>
+        <div className="dashboard-form-card">
+          <div className="dashboard-form-card__header">
+            <h2 className="dashboard-form-card__title">Goal details</h2>
+            <p className="dashboard-form-card__subtitle">
+              Define what you are saving for and when you would like to reach it.
+            </p>
           </div>
-          
-          <div className="airpay__header-actions">
-            <div className="airpay__date">{new Date().toLocaleDateString('en-GB')}</div>
-            <div className="airpay__user">
-              <img src="https://i.pravatar.cc/150?img=12" alt="User" className="airpay__user-avatar" />
-              <span className="airpay__user-name">User</span>
+
+          <form className="dashboard-form" onSubmit={handleSubmit} noValidate>
+            <div className="dashboard-form__field">
+              <label className="dashboard-form__label" htmlFor="title">
+                Goal name *
+              </label>
+              <input
+                id="title"
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                className="dashboard-input"
+                placeholder="e.g., Emergency Fund, Vacation, New Car"
+                required
+              />
             </div>
-          </div>
-        </header>
 
-        <div className="form-content">
-          <div className="form-header">
-            <h2 className="form-title">Create Savings Goal</h2>
-            <p className="form-subtitle">Set a new financial goal and track your progress</p>
-          </div>
-
-          <div className="form-container">
-            {error && (
-              <div className="form-error">
-                <span className="form-error-icon">⚠️</span>
-                <span>{error}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="expense-form">
-              <div className="form-group">
-                <label htmlFor="title" className="form-label">Goal Name *</label>
-                <div className="form-input-wrapper">
-                  <span className="form-input-icon">🎯</span>
-                  <input
-                    id="title"
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                    className="form-input"
-                    placeholder="e.g., Emergency Fund, Vacation, New Car"
-                  />
-                </div>
+            <div className="dashboard-form__grid">
+              <div className="dashboard-form__field">
+                <label className="dashboard-form__label" htmlFor="targetAmount">
+                  Target amount *
+                </label>
+                <input
+                  id="targetAmount"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={targetAmount}
+                  onChange={(event) => setTargetAmount(event.target.value)}
+                  className="dashboard-input"
+                  placeholder="0.00"
+                  required
+                />
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="targetAmount" className="form-label">Target Amount *</label>
-                  <div className="form-input-wrapper">
-                    <span className="form-input-icon">💵</span>
-                    <input
-                      id="targetAmount"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={targetAmount}
-                      onChange={(e) => setTargetAmount(e.target.value)}
-                      required
-                      className="form-input"
-                      placeholder="0.00"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="deadline" className="form-label">Target Date (Optional)</label>
-                  <div className="form-input-wrapper">
-                    <span className="form-input-icon">📅</span>
-                    <input
-                      id="deadline"
-                      type="date"
-                      value={deadline}
-                      onChange={(e) => setDeadline(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-                </div>
+              <div className="dashboard-form__field">
+                <label className="dashboard-form__label" htmlFor="deadline">
+                  Target date
+                </label>
+                <input
+                  id="deadline"
+                  type="date"
+                  value={deadline}
+                  onChange={(event) => setDeadline(event.target.value)}
+                  className="dashboard-input"
+                />
+                <span className="dashboard-form__help">
+                  Optional - choose when you would like to reach this goal.
+                </span>
               </div>
+            </div>
 
-              <div className="form-group">
-                <label htmlFor="description" className="form-label">Description</label>
-                <div className="form-input-wrapper">
-                  <span className="form-input-icon">📝</span>
-                  <textarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="form-textarea"
-                    placeholder="Why is this goal important to you?"
-                    rows={4}
-                  />
-                </div>
-              </div>
+            <div className="dashboard-form__field">
+              <label className="dashboard-form__label" htmlFor="description">
+                Description
+              </label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                className="dashboard-textarea"
+                placeholder="Why is this goal important to you?"
+              />
+            </div>
 
-              <div className="form-actions">
-                <Link to="/savings" className="btn-secondary">Cancel</Link>
-                <button type="submit" className="btn-primary" disabled={loading}>
-                  {loading ? "Creating..." : "Create Goal"}
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="dashboard-form__actions">
+              <Link to="/savings" className="dashboard-button dashboard-button--secondary">
+                Cancel
+              </Link>
+              <button
+                type="submit"
+                className="dashboard-button dashboard-button--primary"
+                disabled={loading}
+              >
+                {loading ? "Creating..." : "Create Goal"}
+              </button>
+            </div>
+          </form>
         </div>
-      </main>
-    </div>
+      </section>
+    </ModernDashboardLayout>
   );
 };
 

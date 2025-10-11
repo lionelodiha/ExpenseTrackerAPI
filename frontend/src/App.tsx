@@ -5,11 +5,11 @@ import PrivateRoute from "./components/PrivateRoute";
 import LandingPage from "./pages/Landingpage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import DashboardPage from "./pages/DashboardPageRedesigned";
-import ExpensesPage from "./pages/ExpensesPage";
+import ModernDashboardPage from "./pages/ModernDashboardPage";
+import ModernExpensesPage from "./pages/ModernExpensesPage";
+import ModernSavingsPage from "./pages/ModernSavingsPage";
 import AddExpensePage from "./pages/AddExpensePage";
 import EditExpensePage from "./pages/EditExpensePage";
-import SavingsPage from "./pages/SavingsPage";
 import AddSavingGoalPage from "./pages/AddSavingGoalPage";
 import EditSavingGoalPage from "./pages/EditSavingGoalPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -25,11 +25,11 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             
-            <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
-            <Route path="/expenses" element={<PrivateRoute><ExpensesPage /></PrivateRoute>} />
+            <Route path="/dashboard" element={<PrivateRoute><ModernDashboardPage /></PrivateRoute>} />
+            <Route path="/expenses" element={<PrivateRoute><ModernExpensesPage /></PrivateRoute>} />
             <Route path="/expenses/add" element={<PrivateRoute><AddExpensePage /></PrivateRoute>} />
             <Route path="/expenses/edit/:id" element={<PrivateRoute><EditExpensePage /></PrivateRoute>} />
-            <Route path="/savings" element={<PrivateRoute><SavingsPage /></PrivateRoute>} />
+            <Route path="/savings" element={<PrivateRoute><ModernSavingsPage /></PrivateRoute>} />
             <Route path="/savings/add" element={<PrivateRoute><AddSavingGoalPage /></PrivateRoute>} />
             <Route path="/savings/edit/:id" element={<PrivateRoute><EditSavingGoalPage /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />

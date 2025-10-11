@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/auth-hook";
 import { userService, type UserProfileData } from "../services/user-service";
+import ModernDashboardLayout from "../components/layout/ModernDashboardLayout";
 import "./ProfilePage.css";
 
 interface ProfileData {
@@ -14,7 +15,7 @@ interface ProfileData {
 }
 
 const ProfilePage = () => {
-  const { user, logout, updateUser } = useAuth();
+  const { user, updateUser } = useAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -137,28 +138,13 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="profile-page">
-      {/* Simple Navbar */}
-      <nav className="profile-navbar">
-        <div className="profile-navbar-container">
-          <Link to="/dashboard" className="profile-navbar-brand">
-            <svg width="40" height="40" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="60" height="60" rx="15" fill="#2d5f4d"/>
-              <path d="M30 15L42 25H38V40C38 41.1046 37.1046 42 36 42H24C22.8954 42 22 41.1046 22 40V25H18L30 15Z" fill="white"/>
-              <circle cx="30" cy="32" r="3" fill="white" fillOpacity="0.3"/>
-            </svg>
-            <span>VINGOSI</span>
-          </Link>
-          <div className="profile-navbar-links">
-            <Link to="/dashboard" className="profile-navbar-link">Dashboard</Link>
-            <Link to="/expenses" className="profile-navbar-link">Expenses</Link>
-            <Link to="/savings" className="profile-navbar-link">Savings</Link>
-            <Link to="/profile" className="profile-navbar-link profile-navbar-link--active">Profile</Link>
-          </div>
-        </div>
-      </nav>
-      
-      <div className="profile-container">
+    <ModernDashboardLayout
+      activeNav="profile"
+      headerTitle="Profile"
+      headerSubtitle="Manage your personal information and preferences"
+    >
+      <div className="profile-page">
+        <div className="profile-container">
         <div className="profile-header">
           <h1 className="profile-title">My Profile</h1>
           <p className="profile-subtitle">Manage your account information and preferences</p>
@@ -193,7 +179,7 @@ const ProfilePage = () => {
                 onChange={handleImageChange}
                 className="profile-picture-input"
               />
-              <p className="profile-picture-hint">Click to upload • Max 5MB • JPG, PNG, GIF</p>
+              <p className="profile-picture-hint">Click to upload - Max 5MB - JPG, PNG, GIF</p>
             </div>
           </div>
 
@@ -352,6 +338,7 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
+    </ModernDashboardLayout>
   );
 };
 

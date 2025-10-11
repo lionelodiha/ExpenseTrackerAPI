@@ -1,0 +1,266 @@
+/* Savings Overview */
+.savings-overview {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--spacing-2xl);
+  align-items: center;
+}
+
+.savings-overview__left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.savings-overview__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gray-600);
+  margin: 0;
+}
+
+.savings-overview__amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.savings-overview__target {
+  font-size: 1rem;
+  color: var(--color-gray-500);
+  font-weight: 500;
+}
+
+.savings-overview__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+}
+
+.savings-overview__progress-bar {
+  flex: 1;
+  height: 12px;
+  background: var(--color-gray-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.savings-overview__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-success), var(--color-primary-500));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-base);
+}
+
+.savings-overview__percentage {
+  font-weight: 700;
+  color: var(--color-primary-600);
+  font-size: 0.875rem;
+  min-width: 50px;
+  text-align: right;
+}
+
+.savings-overview__stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.savings-overview__stat {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-xl);
+}
+
+.savings-overview__stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.savings-overview__stat-label {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.savings-overview__stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+/* Savings Grid */
+.modern-savings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--spacing-xl);
+}
+
+/* Savings Card */
+.modern-savings-card {
+  background: white;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-savings-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-success), var(--color-primary-500));
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.modern-savings-card:hover::before {
+  opacity: 1;
+}
+
+.modern-savings-card:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-4px);
+  border-color: var(--color-primary-200);
+}
+
+.modern-savings-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.modern-savings-card__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin: 0;
+  flex: 1;
+}
+
+.modern-savings-card__description {
+  color: var(--color-gray-600);
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.modern-savings-card__amounts {
+  display: flex;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-lg);
+}
+
+.modern-savings-card__amount-item {
+  flex: 1;
+}
+
+.modern-savings-card__amount-divider {
+  width: 1px;
+  background: var(--color-gray-300);
+}
+
+.modern-savings-card__amount-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gray-500);
+  margin-bottom: 0.5rem;
+}
+
+.modern-savings-card__amount-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.modern-savings-card__progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.modern-savings-card__progress-bar {
+  height: 8px;
+  background: var(--color-gray-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.modern-savings-card__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-success), var(--color-primary-500));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-base);
+}
+
+.modern-savings-card__progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8125rem;
+}
+
+.modern-savings-card__progress-text {
+  font-weight: 600;
+  color: var(--color-primary-600);
+}
+
+.modern-savings-card__progress-remaining {
+  color: var(--color-gray-500);
+}
+
+.modern-savings-card__actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.modern-savings-card__actions .modern-btn {
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .savings-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .modern-savings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .savings-overview__amount {
+    font-size: 2rem;
+  }
+}

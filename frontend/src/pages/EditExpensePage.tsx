@@ -1,23 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import ModernDashboardLayout from "../components/layout/ModernDashboardLayout";
+import "../styles/dashboard-forms.css";
 import type { EnumOptionResponse } from "../dtos/metadata/enum-option-response";
-import { useNavigate, useParams } from "react-router-dom";
-import { metadataService } from "../services/metadata-service";
 import type { CreateExpenseResponse } from "../dtos/expenses/create-expense-response";
-import { expenseService } from "../services/expense-service";
 import type { UpdateExpenseRequest } from "../dtos/expenses/update-expense-request";
-import NavBar from "../components/NavBar";
-import "./EditExpensePage.css"
+import { metadataService } from "../services/metadata-service";
+import { expenseService } from "../services/expense-service";
 
 const EditExpensePage: React.FC = () => {
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState<EnumOptionResponse[]>([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     const loadData = async () => {
@@ -25,7 +26,10 @@ const EditExpensePage: React.FC = () => {
         const categoriesRes = await metadataService.getExpenseCategories();
         setCategories(categoriesRes.data ?? []);
 
-        if (!id) return;
+        if (!id) {
+          return;
+        }
+
         const expenseRes = await expenseService.getById(id);
         const expense: CreateExpenseResponse | null = expenseRes.data ?? null;
 
@@ -43,87 +47,124 @@ const EditExpensePage: React.FC = () => {
     loadData();
   }, [id]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const headerActions = useMemo(
+    () => (
+      <Link to="/expenses" className="dashboard-button dashboard-button--secondary">
+        Back to Expenses
+      </Link>
+    ),
+    [],
+  );
 
-    if (!id) return;
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-    const updatedExpense: UpdateExpenseRequest = {
-      id: id,
-      description: description,
-      amount: parseFloat(amount),
+    if (!id) {
+      return;
+    }
+
+    const parsedAmount = parseFloat(amount);
+    if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+      setError("Please enter a valid amount greater than zero.");
+      return;
+    }
+
+    setLoading(true);
+
+    const payload: UpdateExpenseRequest = {
+      id,
+      description,
+      amount: parsedAmount,
       dateOfExpense: date,
-      category: category,
+      category,
     };
 
     try {
-      await expenseService.update(updatedExpense);
+      await expenseService.update(payload);
       navigate("/expenses");
     } catch {
       setError("Failed to update expense.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="edit-expense">
-      <NavBar />
-      <main className="edit-expense__main">
-        <div className="edit-expense__container">
-          <h1 className="edit-expense__title">Edit Expense</h1>
-          {error && <p className="edit-expense__error">{error}</p>}
-          <form onSubmit={handleSubmit} className="edit-expense__form">
-            <div className="edit-expense__field">
-              <label htmlFor="description" className="edit-expense__label">
+    <ModernDashboardLayout
+      activeNav="expenses"
+      headerTitle="Edit Expense"
+      headerSubtitle="Update the transaction details below"
+      headerActions={headerActions}
+    >
+      <section className="dashboard-form-page">
+        {error ? <div className="dashboard__error">{error}</div> : null}
+
+        <div className="dashboard-form-card">
+          <div className="dashboard-form-card__header">
+            <h2 className="dashboard-form-card__title">Expense information</h2>
+            <p className="dashboard-form-card__subtitle">
+              Make any adjustments and save to keep your records accurate.
+            </p>
+          </div>
+
+          <form className="dashboard-form" onSubmit={handleSubmit}>
+            <div className="dashboard-form__field">
+              <label className="dashboard-form__label" htmlFor="description">
                 Description
               </label>
               <input
                 id="description"
                 type="text"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(event) => setDescription(event.target.value)}
+                className="dashboard-input"
+                placeholder="What was this expense for?"
                 required
-                className="edit-expense__input"
               />
             </div>
 
-            <div className="edit-expense__field">
-              <label htmlFor="amount" className="edit-expense__label">
-                Amount
-              </label>
-              <input
-                id="amount"
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                required
-                className="edit-expense__input"
-              />
+            <div className="dashboard-form__grid">
+              <div className="dashboard-form__field">
+                <label className="dashboard-form__label" htmlFor="amount">
+                  Amount *
+                </label>
+                <input
+                  id="amount"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={amount}
+                  onChange={(event) => setAmount(event.target.value)}
+                  className="dashboard-input"
+                  required
+                />
+              </div>
+
+              <div className="dashboard-form__field">
+                <label className="dashboard-form__label" htmlFor="date">
+                  Date *
+                </label>
+                <input
+                  id="date"
+                  type="date"
+                  value={date}
+                  onChange={(event) => setDate(event.target.value)}
+                  className="dashboard-input"
+                  required
+                />
+              </div>
             </div>
 
-            <div className="edit-expense__field">
-              <label htmlFor="date" className="edit-expense__label">
-                Date
-              </label>
-              <input
-                id="date"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                required
-                className="edit-expense__input"
-              />
-            </div>
-
-            <div className="edit-expense__field">
-              <label htmlFor="category" className="edit-expense__label">
-                Category
+            <div className="dashboard-form__field">
+              <label className="dashboard-form__label" htmlFor="category">
+                Category *
               </label>
               <select
                 id="category"
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(event) => setCategory(event.target.value)}
+                className="dashboard-select"
                 required
-                className="edit-expense__select"
               >
                 {categories.map((cat) => (
                   <option key={cat.value} value={cat.value}>
@@ -133,15 +174,22 @@ const EditExpensePage: React.FC = () => {
               </select>
             </div>
 
-            <div className="edit-expense__actions">
-              <button type="submit" className="edit-expense__submit">
-                Update Expense
+            <div className="dashboard-form__actions">
+              <Link to="/expenses" className="dashboard-button dashboard-button--secondary">
+                Cancel
+              </Link>
+              <button
+                type="submit"
+                className="dashboard-button dashboard-button--primary"
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Update Expense"}
               </button>
             </div>
           </form>
         </div>
-      </main>
-    </div>
+      </section>
+    </ModernDashboardLayout>
   );
 };
 

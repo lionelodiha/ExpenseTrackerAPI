@@ -1,233 +1,209 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { savingGoalService } from "../services/saving-goal-service";
-import type { CreateSavingGoalResponse } from "../dtos/saving-goals/create-saving-goal-response";
-import { useAuth } from "../hooks/auth-hook";
+import DashboardLayout from "../components/layout/DashboardLayout";
 import "./SavingsPage.css";
+import type { CreateSavingGoalResponse } from "../dtos/saving-goals/create-saving-goal-response";
+import { savingGoalService } from "../services/saving-goal-service";
 
-const SavingsPage = () => {
+const SavingsPage: React.FC = () => {
   const [goals, setGoals] = useState<CreateSavingGoalResponse[]>([]);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const { logout } = useAuth();
 
   useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        setLoading(true);
+        const response = await savingGoalService.getAll();
+        setGoals(response.data ?? []);
+        setError("");
+      } catch {
+        setError("Failed to fetch savings goals.");
+        setGoals([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchGoals();
   }, []);
 
-  const fetchGoals = async () => {
-    try {
-      setLoading(true);
-      const response = await savingGoalService.getAll();
-      setGoals(response.data || []);
-    } catch (err: any) {
-      setError("Failed to fetch savings goals.");
-      if (err.response && err.response.status === 404) {
-        setGoals([]);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const totals = useMemo(() => {
+    const totalSaved = goals.reduce((sum, goal) => sum + (goal.currentAmount ?? 0), 0);
+    const totalTarget = goals.reduce((sum, goal) => sum + goal.targetAmount, 0);
+    const progress = totalTarget > 0 ? Math.min((totalSaved / totalTarget) * 100, 100) : 0;
+
+    return { totalSaved, totalTarget, progress };
+  }, [goals]);
+
+  const headerActions = useMemo(
+    () => (
+      <Link to="/savings/add" className="dashboard-button dashboard-button--primary">
+        Create Goal
+      </Link>
+    ),
+    [],
+  );
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this savings goal?')) return;
-    
+    const confirmed = window.confirm("Are you sure you want to delete this savings goal?");
+    if (!confirmed) {
+      return;
+    }
+
     try {
       await savingGoalService.deleteById(id);
-      fetchGoals();
+      setGoals((prev) => prev.filter((goal) => goal.id !== id));
     } catch {
       setError("Failed to delete saving goal.");
     }
   };
 
-  const totalSaved = goals.reduce((sum, goal) => sum + (goal.currentAmount || 0), 0);
-  const totalTarget = goals.reduce((sum, goal) => sum + goal.targetAmount, 0);
-  const overallProgress = totalTarget > 0 ? (totalSaved / totalTarget) * 100 : 0;
-
   return (
-    <div className="airpay">
-      {/* Sidebar */}
-      <aside className="airpay__sidebar">
-        <div className="airpay__brand">
-          <div className="airpay__logo">📱</div>
-          <h1 className="airpay__title">Air Pay</h1>
-        </div>
+    <DashboardLayout
+      activeNav="savings"
+      headerTitle="Savings Goals"
+      headerSubtitle="Stay motivated and watch your progress grow"
+      headerActions={headerActions}
+    >
+      {error ? <div className="dashboard__error">{error}</div> : null}
 
-        <nav className="airpay__nav">
-          <Link to="/dashboard" className="airpay__nav-item">
-            <span className="airpay__nav-icon">📊</span>
-            <span>Dashboard</span>
-          </Link>
-          <Link to="/expenses" className="airpay__nav-item">
-            <span className="airpay__nav-icon">💸</span>
-            <span>Expenses</span>
-          </Link>
-          <Link to="/savings" className="airpay__nav-item airpay__nav-item--active">
-            <span className="airpay__nav-icon">💰</span>
-            <span>Savings</span>
-          </Link>
-          <Link to="/budgets" className="airpay__nav-item">
-            <span className="airpay__nav-icon">📈</span>
-            <span>Budgets</span>
-          </Link>
-          <a href="#settings" className="airpay__nav-item">
-            <span className="airpay__nav-icon">⚙️</span>
-            <span>Settings</span>
-          </a>
-        </nav>
-
-        <div className="airpay__premium">
-          <div className="airpay__premium-badge">⭐</div>
-          <h3 className="airpay__premium-title">Get Premium</h3>
-          <p className="airpay__premium-text">Unlimited functions and encrypted recovery</p>
-          <button className="airpay__premium-btn">
-            <span>Upgrade</span>
-            <span className="airpay__premium-icon">🔒</span>
-          </button>
-        </div>
-
-        <button onClick={logout} className="airpay__logout">Logout</button>
-      </aside>
-
-      {/* Main Content */}
-      <main className="airpay__main">
-        {/* Header */}
-        <header className="airpay__header">
-          <div className="airpay__search">
-            <span className="airpay__search-icon">🔍</span>
-            <input type="text" placeholder="Search savings goals..." className="airpay__search-input" />
-          </div>
-          
-          <div className="airpay__header-actions">
-            <div className="airpay__date">{new Date().toLocaleDateString('en-GB')}</div>
-            <div className="airpay__user">
-              <img 
-                src="https://i.pravatar.cc/150?img=12" 
-                alt="User" 
-                className="airpay__user-avatar"
+      <section className="savings-page">
+        <div className="savings-page__overview">
+          <div className="savings-page__summary-card">
+            <div className="savings-page__summary-header">
+              <h2>Total progress</h2>
+              <span className="savings-page__summary-percentage">
+                {totals.progress.toFixed(1)}%
+              </span>
+            </div>
+            <div className="savings-page__summary-amounts">
+              <div>
+                <p className="savings-page__summary-label">Saved</p>
+                <p className="savings-page__summary-value">${totals.totalSaved.toFixed(2)}</p>
+              </div>
+              <div>
+                <p className="savings-page__summary-label">Target</p>
+                <p className="savings-page__summary-value">${totals.totalTarget.toFixed(2)}</p>
+              </div>
+            </div>
+            <div className="savings-page__progress">
+              <div
+                className="savings-page__progress-bar"
+                style={{ width: `${totals.progress}%` }}
+                aria-valuenow={totals.progress}
+                aria-valuemin={0}
+                aria-valuemax={100}
               />
-              <span className="airpay__user-name">User</span>
-            </div>
-          </div>
-        </header>
-
-        {error && <div className="airpay__error">{error}</div>}
-
-        {/* Content */}
-        <div className="savings-content">
-          <div className="savings-header">
-            <div>
-              <h2 className="savings-title">Savings Goals</h2>
-              <p className="savings-subtitle">Track your progress towards financial goals</p>
-            </div>
-            <Link to="/savings/add" className="btn-add-savings">
-              <span>➕</span>
-              <span>Add Savings Goal</span>
-            </Link>
-          </div>
-
-          {/* Overall Progress */}
-          <div className="savings-overview">
-            <div className="overview-card">
-              <div className="overview-card__header">
-                <h3>Total Savings Progress</h3>
-                <div className="overview-card__percentage">{overallProgress.toFixed(1)}%</div>
-              </div>
-              <div className="overview-card__amounts">
-                <div className="overview-amount">
-                  <span className="overview-amount__label">Saved</span>
-                  <span className="overview-amount__value">${totalSaved.toFixed(2)}</span>
-                </div>
-                <div className="overview-amount">
-                  <span className="overview-amount__label">Target</span>
-                  <span className="overview-amount__value">${totalTarget.toFixed(2)}</span>
-                </div>
-              </div>
-              <div className="overview-progress">
-                <div className="overview-progress__bar" style={{ width: `${Math.min(overallProgress, 100)}%` }}></div>
-              </div>
-            </div>
-
-            <div className="savings-stats-grid">
-              <div className="savings-stat">
-                <div className="savings-stat__icon">🎯</div>
-                <div className="savings-stat__content">
-                  <div className="savings-stat__value">{goals.length}</div>
-                  <div className="savings-stat__label">Active Goals</div>
-                </div>
-              </div>
-              <div className="savings-stat">
-                <div className="savings-stat__icon">✅</div>
-                <div className="savings-stat__content">
-                  <div className="savings-stat__value">{goals.filter(g => g.status === 'Completed').length}</div>
-                  <div className="savings-stat__label">Completed</div>
-                </div>
-              </div>
             </div>
           </div>
 
-          {/* Goals Grid */}
-          {loading ? (
-            <div className="savings-loading">Loading savings goals...</div>
-          ) : goals.length > 0 ? (
-            <div className="savings-grid">
-              {goals.map((goal) => {
-                const progress = (goal.currentAmount / goal.targetAmount) * 100;
-                return (
-                  <div key={goal.id} className={`goal-card ${goal.status === 'Completed' ? 'goal-card--completed' : ''}`}>
-                    <div className="goal-card__header">
-                      <h3 className="goal-card__title">{goal.title}</h3>
-                      <span className={`goal-card__status goal-card__status--${goal.status.toLowerCase()}`}>
-                        {goal.status}
-                      </span>
+          <div className="savings-page__stat-grid">
+            <div className="savings-page__stat-card">
+              <div className="savings-page__stat-icon">🎯</div>
+              <div>
+                <p className="savings-page__stat-label">Active goals</p>
+                <p className="savings-page__stat-value">{goals.length}</p>
+              </div>
+            </div>
+            <div className="savings-page__stat-card">
+              <div className="savings-page__stat-icon">✅</div>
+              <div>
+                <p className="savings-page__stat-label">Completed</p>
+                <p className="savings-page__stat-value">
+                  {goals.filter((goal) => goal.status === "Completed").length}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="savings-page__placeholder">Loading savings goals...</div>
+        ) : goals.length ? (
+          <div className="savings-page__grid">
+            {goals.map((goal) => {
+              const progress =
+                goal.targetAmount > 0
+                  ? Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)
+                  : 0;
+              const statusVariant = goal.status
+                .toLowerCase()
+                .replace(/\s+/g, "-")
+                .replace(/[^a-z-]/g, "");
+
+              return (
+                <article
+                  key={goal.id}
+                  className={`savings-goal-card savings-goal-card--${statusVariant}`}
+                >
+                  <header className="savings-goal-card__header">
+                    <h3>{goal.title}</h3>
+                    <span className={`savings-goal-card__status savings-goal-card__status--${statusVariant}`}>
+                      {goal.status}
+                    </span>
+                  </header>
+
+                  {goal.description ? (
+                    <p className="savings-goal-card__description">{goal.description}</p>
+                  ) : null}
+
+                  <div className="savings-goal-card__amounts">
+                    <div>
+                      <p className="savings-goal-card__label">Current</p>
+                      <p className="savings-goal-card__value">
+                        ${goal.currentAmount?.toFixed(2) ?? "0.00"}
+                      </p>
                     </div>
-
-                    {goal.description && (
-                      <p className="goal-card__description">{goal.description}</p>
-                    )}
-
-                    <div className="goal-card__amounts">
-                      <div className="goal-card__amount">
-                        <span className="goal-card__amount-label">Current</span>
-                        <span className="goal-card__amount-value">${goal.currentAmount?.toFixed(2) || '0.00'}</span>
-                      </div>
-                      <div className="goal-card__amount">
-                        <span className="goal-card__amount-label">Target</span>
-                        <span className="goal-card__amount-value">${goal.targetAmount.toFixed(2)}</span>
-                      </div>
-                    </div>
-
-                    <div className="goal-card__progress">
-                      <div className="goal-card__progress-bar" style={{ width: `${Math.min(progress, 100)}%` }}></div>
-                    </div>
-                    <div className="goal-card__progress-text">{progress.toFixed(1)}% complete</div>
-
-                    <div className="goal-card__actions">
-                      <Link to={`/savings/edit/${goal.id}`} className="goal-card__action goal-card__action--edit">
-                        ✏️ Edit
-                      </Link>
-                      <button onClick={() => handleDelete(goal.id)} className="goal-card__action goal-card__action--delete">
-                        🗑️ Delete
-                      </button>
+                    <div>
+                      <p className="savings-goal-card__label">Target</p>
+                      <p className="savings-goal-card__value">${goal.targetAmount.toFixed(2)}</p>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="savings-empty">
-              <div className="savings-empty__icon">💰</div>
-              <h3>No savings goals yet</h3>
-              <p>Start building your future by creating your first savings goal</p>
-              <Link to="/savings/add" className="btn-add-savings">
-                Create First Goal
-              </Link>
-            </div>
-          )}
-        </div>
-      </main>
-    </div>
+
+                  <div className="savings-goal-card__progress">
+                    <div className="savings-goal-card__progress-track">
+                      <div
+                        className="savings-goal-card__progress-fill"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                    <span className="savings-goal-card__progress-text">
+                      {progress.toFixed(1)}% complete
+                    </span>
+                  </div>
+
+                  <div className="savings-goal-card__actions">
+                    <Link
+                      to={`/savings/edit/${goal.id}`}
+                      className="savings-goal-card__action"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      type="button"
+                      className="savings-goal-card__action savings-goal-card__action--danger"
+                      onClick={() => handleDelete(goal.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="savings-page__empty">
+            <div className="savings-page__empty-icon">💡</div>
+            <h3>No savings goals yet</h3>
+            <p>Create your first goal to start building momentum.</p>
+            <Link to="/savings/add" className="dashboard-button dashboard-button--secondary">
+              Create Goal
+            </Link>
+          </div>
+        )}
+      </section>
+    </DashboardLayout>
   );
 };
 

@@ -1,0 +1,83 @@
+/* Modern Filter */
+.modern-filter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.modern-filter__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+}
+
+/* Modern Table Cells */
+.modern-table-category {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.modern-table-category__icon {
+  font-size: 1.25rem;
+}
+
+.modern-table-description {
+  font-weight: 500;
+  color: var(--color-gray-900);
+}
+
+.modern-table-date {
+  color: var(--color-gray-600);
+  font-size: 0.875rem;
+}
+
+.modern-table-amount {
+  font-weight: 700;
+  color: var(--color-danger);
+  font-size: 1rem;
+}
+
+.modern-table-empty {
+  color: var(--color-gray-400);
+}
+
+.modern-table-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.modern-btn--danger {
+  color: var(--color-danger);
+}
+
+.modern-btn--danger:hover {
+  background: var(--color-danger-light);
+}
+
+/* Responsive Table */
+@media (max-width: 1024px) {
+  .modern-table-container {
+    overflow-x: auto;
+  }
+
+  .modern-table {
+    min-width: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modern-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modern-filter__label {
+    display: none;
+  }
+
+  .modern-input {
+    width: 100% !important;
+  }
+}

@@ -26,9 +26,9 @@ export const expenseService = {
 		return unwrapApiResponse(response);
 	},
 
-	async getAll(): Promise<ApiResponse<CreateExpenseResponse[]>> {
+	async getAll(signal?: AbortSignal): Promise<ApiResponse<CreateExpenseResponse[]>> {
 		const response = await expenseTrackerApiClient
-			.get<ApiResponse<CreateExpenseResponse[]>>(ExpenseTrackerApiRoutes.expense.get.all);
+			.get<ApiResponse<CreateExpenseResponse[]>>(ExpenseTrackerApiRoutes.expense.get.all, { signal });
 
 		return unwrapApiResponse(response);
 	},
