@@ -3,24 +3,46 @@ using PostmarkDotNet;
 namespace ExpenseTracker.Services;
 
 /// <summary>
-/// Provides email-related services using configuration settings.
+/// Email service that gracefully disables delivery when Postmark config is missing.
+/// Prevents local/dev environments from failing on auth flows.
 /// </summary>
-internal class EmailService(IConfiguration config) : IEmailService
+internal class EmailService : IEmailService
 {
-    private readonly string _postmarkToken = config["Postmark:Token"]
-        ?? throw new InvalidOperationException($"Configuration setting 'Postmark:Token' is missing or invalid");
+    private readonly string? _postmarkToken;
+    private readonly string? _fromEmail;
+    private readonly ILogger<EmailService> _logger;
+    private readonly bool _enabled;
 
-    private readonly string _fromEmail = config["Postmark:FromEmail"]
-        ?? throw new InvalidOperationException($"Configuration setting 'Postmark:FromEmail' is missing or invalid");
+    public EmailService(IConfiguration config, ILogger<EmailService> logger)
+    {
+        _logger = logger;
+        _postmarkToken = config["Postmark:Token"];
+        _fromEmail = config["Postmark:FromEmail"];
+
+        _enabled = !string.IsNullOrWhiteSpace(_postmarkToken)
+                   && !string.IsNullOrWhiteSpace(_fromEmail);
+
+        if (!_enabled)
+        {
+            _logger.LogWarning("Postmark configuration missing. Email sending disabled in this environment.");
+        }
+    }
 
     public async Task<bool> SendEmailAsync(string to, string subject, string htmlBody, string? plainText = null)
     {
-        PostmarkClient client = new(_postmarkToken);
+        if (!_enabled)
+        {
+            _logger.LogInformation("EmailService disabled: skipping SendEmailAsync to {to}", to);
+            await Task.CompletedTask;
+            return false;
+        }
+
+        PostmarkClient client = new(_postmarkToken!);
 
         PostmarkMessage message = new()
         {
             To = to,
-            From = _fromEmail,
+            From = _fromEmail!,
             Subject = subject,
             HtmlBody = htmlBody,
             TextBody = plainText ?? "This is a fallback plain-text version.",
@@ -33,12 +55,19 @@ internal class EmailService(IConfiguration config) : IEmailService
 
     public async Task<bool> SendTemplateEmailAsync(string to, int templateId, object templateModel)
     {
-        PostmarkClient client = new(_postmarkToken);
+        if (!_enabled)
+        {
+            _logger.LogInformation("EmailService disabled: skipping SendTemplateEmailAsync to {to} with template {templateId}", to, templateId);
+            await Task.CompletedTask;
+            return false;
+        }
+
+        PostmarkClient client = new(_postmarkToken!);
 
         PostmarkResponse result = await client.SendEmailWithTemplateAsync(new TemplatedPostmarkMessage
         {
             To = to,
-            From = _fromEmail,
+            From = _fromEmail!,
             TemplateId = templateId,
             TemplateModel = templateModel
         });

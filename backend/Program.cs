@@ -19,7 +19,14 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 //--------------- Add database connection ---------------
 builder.Services.AddDbContext<ExpenseTrackerDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    // Prefer SQLite for local/dev convenience; falls back to appsettings value
+    string? conn = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (string.IsNullOrWhiteSpace(conn))
+    {
+        conn = "Data Source=expense_tracker.db";
+    }
+
+    options.UseSqlite(conn);
 });
 
 //--------------- Add CORS policy ---------------
@@ -166,6 +173,13 @@ builder.Services.AddAuthentication(options =>
 });
 
 WebApplication app = builder.Build();
+
+// Ensure database exists (no-op if it already does)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ExpenseTrackerDbContext>();
+    db.Database.EnsureCreated();
+}
 
 if (app.Environment.IsDevelopment())
 {
